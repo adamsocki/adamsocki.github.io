@@ -10,7 +10,6 @@ module.exports = function(eleventyConfig) {
       output: "_site",
       includes: "_includes",
       layouts: "_layouts"
-    },
-    pathPrefix: "/blog/"
+    }
   };
 };
