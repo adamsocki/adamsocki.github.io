@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or "My Blog" }}</title>
+  <link rel="stylesheet" href="{{ '/css/style.css' | url }}">
+</head>
+<body>
+  <div id="banner">
+    <h1><a href="{{ '/' | url }}">building in public</a></h1>
+    <p class="description">ongoing projects and updates</p>
+  </div>
+
+  <div id="container">
+    <div id="content">
+      {{ content }}
+    </div>
+
+    <div id="sidebar">
+      <div class="sidetitle">Navigation</div>
+      <div class="side">
+        <a href="{{ '/' | url }}">Home</a><br />
+        <a href="{{ '/blog/' | url }}">Blog</a><br />
+        <a href="{{ '/projects/' | url }}">Projects</a>
+      </div>
+
+      <div class="sidetitle">Archives</div>
+      <div class="side">
+        {%- for post in collections.post | reverse -%}
+          <a href="{{ post.url }}">{{ post.data.title }}</a> <small>({{ post.date | date: "%b %d" }})</small><br />
+        {%- endfor -%}
+      </div>
+
+      <div class="sidetitle">Meta</div>
+      <div class="side">
+        <p>Building in public &copy; {{ "now" | date: "%Y" }}</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
