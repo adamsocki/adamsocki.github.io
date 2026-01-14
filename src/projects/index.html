@@ -3,16 +3,10 @@ layout: base.html
 title: Projects
 ---
 
-<h2>Current Projects</h2>
+<h2>Curated Projects</h2>
 
-<div class="post">
-  <h3>Project Name</h3>
-  <p>Add your project descriptions here. Each project can have its own page or just be listed here.</p>
-  <p><b>Status:</b> In Progress</p>
-</div>
-
-<div class="post">
-  <h3>Another Project</h3>
-  <p>You can add as many projects as you want...</p>
-  <p><b>Status:</b> Planning</p>
+<div class="projects-grid">
+  {%- for project in collections.projects | reverse -%}
+    {% include "project-card.html" %}
+  {%- endfor -%}
 </div>

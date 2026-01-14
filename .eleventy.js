@@ -3,6 +3,11 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/assets");
 
+  // Add projects collection
+  eleventyConfig.addCollection("projects", function(collection) {
+    return collection.getFilteredByGlob("src/_projects/*.md");
+  });
+
   // Set input and output directories
   return {
     dir: {
