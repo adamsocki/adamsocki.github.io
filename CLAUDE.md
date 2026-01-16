@@ -37,7 +37,7 @@ src/
 ├── css/
 │   └── style.css      # k-punk inspired retro styling (Win98-ish aesthetic)
 ├── assets/            # Static assets (images, etc.)
-├── home.html          # Homepage (displays recent posts in reverse chronological order)
+├── index.html         # Homepage (displays recent posts in reverse chronological order)
 ├── blog-list.html     # Blog listing page (shows all posts with dates)
 └── projects-list.html # Projects grid (uses collections.projects)
 ```
@@ -85,7 +85,7 @@ blogPost: "/blog/project-writeup/"
   - Sidebar with navigation, blog archives (from `collections.post | reverse`), and meta info
   - Main content area where `{{ content }}` is injected
 - Nunjucks filters: `| url`, `| date`, `| reverse`
-- Homepage (`src/home.html`) iterates over `collections.post | reverse` to show recent posts
+- Homepage (`src/index.html`) iterates over `collections.post | reverse` to show recent posts
 
 ### Static Assets
 The Eleventy config uses `addPassthroughCopy` to copy these unchanged:
