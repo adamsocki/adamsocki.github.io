@@ -1,4 +1,5 @@
 ---
+layout: project.html
 title: "Project Title Here"
 description: "A brief one-liner description of what this project does. This is what people will see first on the projects page."
 status: "Active"

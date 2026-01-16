@@ -1,5 +1,12 @@
 <div class="project-card">
-  <h3 class="project-title">{{ project.data.title }}</h3>
+
+  <div class="project-header">
+    <h3 class="project-title"><a href="{{ project.url }}">{{ project.data.title }}</a></h3>
+    {%- if project.data.date -%}
+      <span class="project-date">{{ project.data.date | date: "%b %Y" }}</span>
+    {%- endif -%}
+  </div>
+
 
   <p class="project-description">{{ project.data.description }}</p>
 

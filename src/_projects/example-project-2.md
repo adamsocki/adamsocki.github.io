@@ -1,4 +1,5 @@
 ---
+layout: project.html
 title: "Learning Experiment - Algorithm Visualizer"
 description: "An interactive tool to visualize common sorting and pathfinding algorithms. Built to understand algorithm complexity."
 status: "Learning"

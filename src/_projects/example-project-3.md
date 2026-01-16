@@ -1,6 +1,8 @@
 ---
+layout: project.html
 title: "urban@home - BOINC"
-description: "An interactive tool to visualize common sorting and pathfinding algorithms. Built to understand algorithm complexity."
+description: "Urban@home is a volunteer computing project that uses the BOINC platform to simulate urban environments using SLEUTH modeling."
+date: 2026-01-02
 status: "Learning"
 tags:
   - "Python"
