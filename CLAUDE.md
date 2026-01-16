@@ -34,13 +34,12 @@ src/
 │   └── base.html      # Main layout with banner, sidebar, and content area
 ├── _projects/         # Project markdown files (for projects collection)
 ├── blog/              # Blog post markdown files (tagged with 'post')
-│   └── index.html     # Blog listing page (shows all posts with dates)
-├── projects/          # Projects listing page
-│   └── index.html     # Projects grid (uses collections.projects)
 ├── css/
 │   └── style.css      # k-punk inspired retro styling (Win98-ish aesthetic)
 ├── assets/            # Static assets (images, etc.)
-└── index.html         # Homepage (displays recent posts in reverse chronological order)
+├── home.html          # Homepage (displays recent posts in reverse chronological order)
+├── blog-list.html     # Blog listing page (shows all posts with dates)
+└── projects-list.html # Projects grid (uses collections.projects)
 ```
 
 ### Collections
@@ -77,7 +76,7 @@ demoUrl: "https://demo-url.com"
 blogPost: "/blog/project-writeup/"
 ---
 ```
-- Projects are displayed in `src/projects/index.html` using the `collections.projects` collection
+- Projects are displayed in `src/projects-list.html` using the `collections.projects` collection
 - Status badges have predefined styles in CSS (`.status-active`, `.status-learning`, `.status-planning`, `.status-archived`)
 
 ### Templating & Layout
@@ -86,7 +85,7 @@ blogPost: "/blog/project-writeup/"
   - Sidebar with navigation, blog archives (from `collections.post | reverse`), and meta info
   - Main content area where `{{ content }}` is injected
 - Nunjucks filters: `| url`, `| date`, `| reverse`
-- Homepage (`src/index.html`) iterates over `collections.post | reverse` to show recent posts
+- Homepage (`src/home.html`) iterates over `collections.post | reverse` to show recent posts
 
 ### Static Assets
 The Eleventy config uses `addPassthroughCopy` to copy these unchanged:

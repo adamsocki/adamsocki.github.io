@@ -1,31 +1,31 @@
 <div class="project-card">
-  <h3 class="project-title">{{ title }}</h3>
+  <h3 class="project-title">{{ project.data.title }}</h3>
 
-  <p class="project-description">{{ description }}</p>
+  <p class="project-description">{{ project.data.description }}</p>
 
   <div class="project-meta">
     <div class="project-tags">
-      {%- for tag in tags -%}
+      {%- for tag in project.data.tags -%}
         <span class="tag">{{ tag }}</span>
       {%- endfor -%}
     </div>
 
     <div class="project-status">
-      <span class="status-badge status-{{ status | downcase | replace: " ", "-" }}">{{ status }}</span>
+      <span class="status-badge status-{{ project.data.status | downcase | replace: " ", "-" }}">{{ project.data.status }}</span>
     </div>
   </div>
 
   <div class="project-links">
-    {%- if repoUrl -%}
-      <a href="{{ repoUrl }}" class="project-link">GitHub</a>
+    {%- if project.data.repoUrl -%}
+      <a href="{{ project.data.repoUrl }}" class="project-link">GitHub</a>
     {%- endif -%}
 
-    {%- if demoUrl -%}
-      <a href="{{ demoUrl }}" class="project-link">Live Demo</a>
+    {%- if project.data.demoUrl -%}
+      <a href="{{ project.data.demoUrl }}" class="project-link">Live Demo</a>
     {%- endif -%}
 
-    {%- if blogPost -%}
-      <a href="{{ blogPost }}" class="project-link">Read More</a>
+    {%- if project.data.blogPost -%}
+      <a href="{{ project.data.blogPost }}" class="project-link">Read More</a>
     {%- endif -%}
   </div>
 </div>
