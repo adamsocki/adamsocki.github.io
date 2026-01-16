@@ -15,22 +15,20 @@ layout: base.html
   </header>
 
   <div class="project-detail-meta">
-    <div class="project-status">
-      <span class="status-badge status-{{ status | downcase | replace: " ", "-" }}">{{ status }}</span>
-    </div>
-
-    {%- if tags.length > 0 -%}
     <div class="project-tags">
       {%- for tag in tags -%}
         <span class="tag">{{ tag }}</span>
       {%- endfor -%}
     </div>
-    {%- endif -%}
+
+    <div class="project-status">
+      <span class="status-badge status-{{ status | downcase | replace: " ", "-" }}">{{ status }}</span>
+    </div>
   </div>
 
   {%- if description -%}
   <div class="project-detail-description">
-    <p><strong>{{ description }}</strong></p>
+    <p>{{ description }}</p>
   </div>
   {%- endif -%}
 

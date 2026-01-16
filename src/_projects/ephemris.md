@@ -1,10 +1,11 @@
 ---
 layout: project.html
-title: "Learning Experiment - Algorithm Visualizer"
-description: "An interactive tool to visualize common sorting and pathfinding algorithms. Built to understand algorithm complexity."
+title: "ephemris - gaia data & resource management simulation"
+description: "Ephemris is a simulation project that manages and visualizes Gaia data and resources."
+date: 2026-01-02
 status: "Learning"
 tags:
-  - "Python"
+  - "Rust"
   - "Visualization"
   - "Algorithms"
 repoUrl: "https://github.com/adamsocki/your-repo-name"

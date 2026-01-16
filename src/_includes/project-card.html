@@ -7,9 +7,6 @@
     {%- endif -%}
   </div>
 
-
-  <p class="project-description">{{ project.data.description }}</p>
-
   <div class="project-meta">
     <div class="project-tags">
       {%- for tag in project.data.tags -%}
@@ -21,6 +18,8 @@
       <span class="status-badge status-{{ project.data.status | downcase | replace: " ", "-" }}">{{ project.data.status }}</span>
     </div>
   </div>
+
+  <p class="project-description">{{ project.data.description }}</p>
 
   <div class="project-links">
     {%- if project.data.repoUrl -%}
