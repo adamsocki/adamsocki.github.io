@@ -11,7 +11,7 @@ tags:
   - "HPC"
 # repoUrl: "https://github.com/adamsocki/your-repo-name"
 # demoUrl: ""
-blogPost: "/blog/urban_at_home_proj"
+blogPost: "/posts/boinc_server_setup/"
 ---
 
 ### More Coming Soon!
