@@ -1,5 +1,5 @@
 ---
-layout: base.html
+layout: blog.html
 title: First Post - Getting Started
 description: Starting my journey of building in public
 date: 2025-12-26
