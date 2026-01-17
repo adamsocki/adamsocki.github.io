@@ -1,0 +1,52 @@
+---
+layout: base.html
+---
+
+<div class="back-link">
+  <a href="{{ '/projects-list/' | url }}">&larr; Back to Projects</a>
+</div>
+
+<article class="project-detail">
+  <header class="project-detail-header">
+    <h2>{{ title }}</h2>
+    {%- if date -%}
+      <p class="project-detail-date">{{ date | date: "%B %d, %Y" }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="project-detail-meta">
+    <div class="project-tags">
+      {%- for tag in tags -%}
+        <span class="tag">{{ tag }}</span>
+      {%- endfor -%}
+    </div>
+
+    <div class="project-status">
+      <span class="status-badge status-{{ status | downcase | replace: " ", "-" }}">{{ status }}</span>
+    </div>
+  </div>
+
+  {%- if description -%}
+  <div class="project-detail-description">
+    <p>{{ description }}</p>
+  </div>
+  {%- endif -%}
+
+  {%- if repoUrl or demoUrl or blogPost -%}
+  <div class="project-links">
+    {%- if repoUrl -%}
+      <a href="{{ repoUrl }}" class="project-link">GitHub</a>
+    {%- endif -%}
+    {%- if demoUrl -%}
+      <a href="{{ demoUrl }}" class="project-link">Live Demo</a>
+    {%- endif -%}
+    <!-- {%- if blogPost -%}
+      <a href="{{ blogPost }}" class="project-link">Read More</a>
+    {%- endif -%} -->
+  </div>
+  {%- endif -%}
+
+  <div class="project-detail-content">
+    {{ content }}
+  </div>
+</article>

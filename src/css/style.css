@@ -377,6 +377,10 @@ em, i {
   color: #888;
 }
 
+.status-paused {
+  color: #9d4a4a;
+}
+
 .status-learning {
   color: #cc9900;
 }
