@@ -5,12 +5,13 @@ description: "Urban@home is a volunteer computing project that uses the BOINC pl
 date: 2026-01-02
 status: "Learning"
 tags:
-  - "Python"
-  - "Visualization"
-  - "Algorithms"
-repoUrl: "https://github.com/adamsocki/your-repo-name"
-demoUrl: ""
-blogPost: ""
+  - "BOINC"
+  - "Urban Science"
+  - "Distributed Computing"
+  - "HPC"
+# repoUrl: "https://github.com/adamsocki/your-repo-name"
+# demoUrl: ""
+blogPost: "/blog/urban_at_home_proj"
 ---
 
-Optional: Add detailed content about what you learned here.
+### More Coming Soon!
