@@ -35,8 +35,60 @@
       <div class="sidetitle">Meta</div>
       <div class="side">
         <p>Building in public &copy; {{ "now" | date: "%Y" }}</p>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span id="theme-label">theme: system</span>
+        </button>
       </div>
     </div>
   </div>
+
+  <script>
+    // Theme toggle functionality
+    (function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeLabel = document.getElementById('theme-label');
+      const html = document.documentElement;
+
+      // Theme cycle: system -> light -> dark -> system
+      const themes = ['system', 'light', 'dark'];
+
+      // Get stored theme or default to system
+      let currentTheme = localStorage.getItem('theme') || 'system';
+
+      function applyTheme(theme) {
+        if (theme === 'system') {
+          html.removeAttribute('data-theme');
+          // Apply system preference
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.setAttribute('data-theme', 'dark');
+          }
+        } else {
+          html.setAttribute('data-theme', theme);
+        }
+        themeLabel.textContent = 'theme: ' + theme;
+        localStorage.setItem('theme', theme);
+      }
+
+      // Apply initial theme
+      applyTheme(currentTheme);
+
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (currentTheme === 'system') {
+            applyTheme('system');
+          }
+        });
+      }
+
+      // Toggle button click handler
+      themeToggle.addEventListener('click', () => {
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        currentTheme = themes[nextIndex];
+        applyTheme(currentTheme);
+      });
+    })();
+  </script>
 </body>
 </html>

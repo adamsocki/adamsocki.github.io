@@ -1,20 +1,27 @@
 ---
 layout: base.html
-title: Blog Archive
+title: Home
 ---
 
-{%- for post in collections.post | reverse -%}
-<div class="date-header">{{ post.date | date: "%B %d, %Y" }}</div>
+<div class="post">
+  <h2>Adam Socki</h2>
+
+  <p>Transportation planner by day. Developer by night.</p>
+
+  <p>This site is a collection of projects I'm working on—things I'm building, learning, and experimenting with. Mostly code-related, sometimes transportation-related, occasionally both.</p>
+
+  <p>Check out the <a href="{{ '/projects-list/' | url }}">projects page</a> to see what I'm currently working on, or browse the <a href="{{ '/blog-list/' | url }}">blog</a> for writeups and updates.</p>
+</div>
 
 <div class="post">
-  <h3><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
-
-  {%- if post.data.description -%}
-  <p>{{ post.data.description }}</p>
-  {%- endif -%}
-
-  <div class="post-meta">
-    Posted at {{ post.date | date: "%I:%M %p" }}
+  <h3>Recent Posts</h3>
+  {%- for post in collections.post | reverse | limit: 3 -%}
+  <div style="margin-bottom: 1rem;">
+    <a href="{{ post.url }}">{{ post.data.title }}</a>
+    <small style="color: #666;">({{ post.date | date: "%b %d, %Y" }})</small>
+    {%- if post.data.description -%}
+    <br><span style="font-size: 0.9rem;">{{ post.data.description }}</span>
+    {%- endif -%}
   </div>
+  {%- endfor -%}
 </div>
-{%- endfor -%}
