@@ -9,9 +9,14 @@ tags:
   - "Portfolio"
   - "Writing"
   - "Organization"
-repoUrl: "https://github.com/adamsocki/adamsocki.github.io"
-demoUrl: "https://adamsocki.github.io"
+# repoUrl: "https://github.com/adamsocki/adamsocki.github.io"
+# demoUrl: "https://adamsocki.github.io"
 blogPost: ""
 ---
 
-Optional: Add detailed content about what you learned here.
+<!-- Optional: Add detailed content about what you learned here. -->
+
+# This Blog
+
+## Overview
+

@@ -116,6 +116,92 @@ a:hover {
   font-size: 12px;
 }
 
+/* Archives grouped by year/month */
+.archive-year-group {
+  margin-top: 6px;
+}
+
+.archive-year-group:first-child {
+  margin-top: 0;
+}
+
+.archive-year {
+  font-weight: bold;
+  font-size: 11px;
+  color: var(--text-heading);
+  cursor: pointer;
+  list-style: none;
+  margin-bottom: 2px;
+}
+
+.archive-year::-webkit-details-marker {
+  display: none;
+}
+
+.archive-month-group {
+  margin-top: 4px;
+}
+
+.archive-month {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  padding-left: 6px;
+  padding-bottom: 2px;
+  text-transform: lowercase;
+  border-bottom: 1px solid var(--border-lighter);
+  cursor: pointer;
+  list-style: none;
+}
+
+.archive-month::-webkit-details-marker {
+  display: none;
+}
+
+.archive-year > .summary-caret {
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.archive-year-group[open] > .archive-year > .summary-caret {
+  transform: rotate(90deg);
+}
+
+.archive-month > .summary-caret {
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.archive-month-group[open] > .archive-month > .summary-caret {
+  transform: rotate(90deg);
+}
+
+.archive-entry {
+  padding: 3px 3px 3px 6px;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+
+.archive-entry:hover {
+  border-color: var(--border-lighter);
+  background: var(--bg-accent);
+}
+
+.archive-link {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.archive-date {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+
 .sidetitle {
   font-weight: bold;
   margin-top: 15px;
@@ -675,6 +761,18 @@ em, i {
   border-top: 1px solid var(--border-lighter);
 }
 
+/* Section divider - transition box */
+.section-divider {
+  margin: 2.5rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--bg-code);
+  border: 1px solid var(--border-light);
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
 /* Enhanced code blocks for blog */
 .blog-post-content pre {
   margin: 15px 0;
@@ -735,13 +833,13 @@ em, i {
 }
 
 .summary-caret {
-  font-size: 9px;
+  font-size: 11px;
   transition: transform 0.2s ease;
   display: inline-block;
   color: var(--text-tertiary);
 }
 
-details[open] .summary-caret {
+.blog-summary[open] .summary-caret {
   transform: rotate(90deg);
 }
 
@@ -781,4 +879,7 @@ details[open] .summary-caret {
   .projects-grid {
     grid-template-columns: 1fr;
   }
+
+  
+
 }

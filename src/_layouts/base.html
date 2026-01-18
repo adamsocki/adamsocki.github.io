@@ -26,10 +26,33 @@
       </div>
 
       <div class="sidetitle">Archives</div>
-      <div class="side">
-        {%- for post in collections.post | reverse -%}
-          <a href="{{ post.url | url }}">{{ post.data.title }}</a> <small>({{ post.date | date: "%b %d" }})</small><br />
+      <div class="side archives">
+        {%- assign currentYear = "" -%}
+        {%- assign currentMonth = "" -%}
+        {%- for post in collections.post reversed -%}
+          {%- assign postYear = post.date | date: "%Y" -%}
+          {%- assign postMonth = post.date | date: "%B" -%}
+          {%- if postYear != currentYear -%}
+            {%- if currentMonth != "" -%}</details>{%- endif -%}
+            {%- if currentYear != "" -%}</details>{%- endif -%}
+            {%- assign currentYear = postYear -%}
+            {%- assign currentMonth = "" -%}
+            <details class="archive-year-group" open>
+              <summary class="archive-year"><span class="summary-caret">▸</span> {{ postYear }}</summary>
+          {%- endif -%}
+          {%- if postMonth != currentMonth -%}
+            {%- if currentMonth != "" -%}</details>{%- endif -%}
+            {%- assign currentMonth = postMonth -%}
+            <details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> {{ postMonth }}</summary>
+          {%- endif -%}
+          <div class="archive-entry">
+            <a href="{{ post.url | url }}" class="archive-link">{{ post.data.title }}</a>
+            <div class="archive-date">{{ post.date | date: "%b %e" }}</div>
+          </div>
         {%- endfor -%}
+        {%- if currentMonth != "" -%}</details>{%- endif -%}
+        {%- if currentYear != "" -%}</details>{%- endif -%}
       </div>
 
       <div class="sidetitle">Meta</div>

@@ -1,6 +1,6 @@
 ---
 layout: blog.html
-title: BOINC Server Setup Guide - Hello World for urban@home
+title: BOINC Guide - Hello World for urban@home
 description: BOINC server setup guide for urban@home project with how to get started with a boilerplate project server. This guide covers installation, configuration, and deployment steps for setting up a BOINC server.
 date: 2026-01-15
 tags: post
