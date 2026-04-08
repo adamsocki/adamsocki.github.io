@@ -4,6 +4,7 @@ title: "zayn|rami - vulcan game engine"
 description: "zayn|rami is a game engine built in C++ using the Vulkan API."
 date: 2024-01-02
 status: "Paused"
+projectSlug: "zayn-rami"
 tags:
   - "Game Development"
   - "Engine Development"

@@ -4,6 +4,7 @@ title: "ephemris - gaia data & resource management simulation"
 description: "Ephemris is a simulation project that manages and visualizes Gaia data and resources. It is built using Rust and the Bevy engine."
 date: 2026-01-02
 status: "Paused"
+projectSlug: "ephemris"
 tags:
   - "Rust"
   - "Visualization"

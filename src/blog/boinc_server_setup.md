@@ -1,9 +1,9 @@
 ---
-layout: blog.html
 title: BOINC Server Setup Guide - Hello World for urban@home
 description: BOINC server setup guide for urban@home project with how to get started with a boilerplate project server. This guide covers installation, configuration, and deployment steps for setting up a BOINC server.
 date: 2026-01-15
-tags: post
+type: article
+project: urban-at-home
 summary: "This page walkthrough of how I plan to set up my own BOINC distributed computing server from scratch. This is the same server setup that is used for projects like SETI@home and Einstein@Home. This guide breaks down the official BOINC cookbook into 15 digestible phases using Claude Opus 4.5, covering everything from VM setup to running your first distributed job. I plan to use this as a way to set up my own BOINC project server. This is for my urban@home project which aims to explore large-scale urban science simulations."
 ---
 
