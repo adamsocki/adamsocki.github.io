@@ -1,10 +1,24 @@
 ---
 layout: base.html
-title: Projects
+title: Project Archive
 permalink: /projects-list/index.html
 ---
 
-<h2>Curated Projects</h2>
+<h2>Project Archive</h2>
+
+<div class="archive-intro">
+  <p>This is a shelf for projects, prototypes, and technical experiments. Some are active, some are paused, and some are archived because the lesson was more useful than the finished product.</p>
+
+  <p>Each project page should answer a few simple questions: what it is, why it exists, what works, what was learned, and what would come next.</p>
+</div>
+
+<div class="archive-status-note">
+  <strong>Status key:</strong>
+  <span class="status-badge status-active">active</span> = currently moving,
+  <span class="status-badge status-paused">paused</span> = worth preserving but not current,
+  <span class="status-badge status-planning">planning</span> = concept/prototype,
+  <span class="status-badge status-archived">archived</span> = tombstone or lesson learned.
+</div>
 
 <div class="projects-grid">
   {%- for project in collections.projects | reverse -%}
