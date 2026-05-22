@@ -22,14 +22,15 @@
       <div class="side">
         <a href="{{ '/' | url }}">Home</a><br />
         <a href="{{ '/blog-list/' | url }}">Blog</a><br />
-        <a href="{{ '/projects-list/' | url }}">Projects</a>
+        <a href="{{ '/projects-list/' | url }}">Projects</a><br />
+        <a href="{{ '/new-post/' | url }}" style="color: var(--text-tertiary);">+ new post</a>
       </div>
 
       <div class="sidetitle">Archives</div>
       <div class="side archives">
         {%- assign currentYear = "" -%}
         {%- assign currentMonth = "" -%}
-        {%- for post in collections.post reversed -%}
+        {%- for post in collections.posts -%}
           {%- assign postYear = post.date | date: "%Y" -%}
           {%- assign postMonth = post.date | date: "%B" -%}
           {%- if postYear != currentYear -%}

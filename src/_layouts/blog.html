@@ -4,16 +4,29 @@ layout: base.html
 
 <div class="back-link">
   <a href="{{ '/blog-list/' | url }}">&larr; Back to Blog</a>
+  {%- if project -%}
+    {%- for proj in collections.projects -%}
+      {%- if proj.data.projectSlug == project -%}
+        &nbsp;&middot;&nbsp; <a href="{{ proj.url | url }}">{{ proj.data.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
 </div>
 
 <article class="blog-post">
   <header class="blog-post-header">
     <h1>{{ title }}</h1>
-    {%- if date -%}
-      <div class="blog-post-meta">
+    <div class="blog-post-meta">
+      {%- if date -%}
         <time datetime="{{ date }}">{{ date | date: "%B %d, %Y" }}</time>
-      </div>
-    {%- endif -%}
+      {%- endif -%}
+      {%- if type and type != "article" -%}
+        <span class="post-type-badge post-type-{{ type }}">{{ type }}</span>
+      {%- endif -%}
+      {%- if project -%}
+        <span class="post-project-badge">{{ project }}</span>
+      {%- endif -%}
+    </div>
   </header>
 
   {%- if summary -%}

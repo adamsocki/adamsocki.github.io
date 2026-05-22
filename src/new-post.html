@@ -1,0 +1,195 @@
+---
+layout: base.html
+title: New Post
+permalink: /new-post/index.html
+---
+
+<h2>New Post</h2>
+<p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Fill in what you want, hit generate, copy the file into <code>src/blog/</code>.</p>
+
+<div class="new-post-form">
+  <div class="form-row">
+    <label for="np-type">type</label>
+    <select id="np-type">
+      <option value="article">article — full writeup</option>
+      <option value="devlog">devlog — what I worked on today</option>
+      <option value="til">til — something I just learned</option>
+      <option value="update">update — quick status note</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="np-title">title</label>
+    <input type="text" id="np-title" placeholder="what's this about?" autofocus>
+  </div>
+
+  <div class="form-row">
+    <label for="np-project">project</label>
+    <select id="np-project">
+      <option value="">(none)</option>
+      {%- for proj in collections.projects -%}
+        {%- if proj.data.projectSlug -%}
+        <option value="{{ proj.data.projectSlug }}">{{ proj.data.title }}</option>
+        {%- endif -%}
+      {%- endfor -%}
+    </select>
+  </div>
+
+  <div class="form-row" id="desc-row">
+    <label for="np-desc">description</label>
+    <input type="text" id="np-desc" placeholder="one-liner (optional)">
+  </div>
+
+  <div class="form-row">
+    <label for="np-content">content</label>
+    <textarea id="np-content" rows="12" placeholder="start writing... (markdown)"></textarea>
+  </div>
+
+  <div class="form-actions">
+    <button id="np-generate" class="form-btn">generate file</button>
+    <button id="np-copy" class="form-btn" style="display:none;">copy to clipboard</button>
+    <button id="np-download" class="form-btn" style="display:none;">download .md</button>
+  </div>
+
+  <div id="np-output-wrap" style="display:none;">
+    <div class="form-row">
+      <label>filename</label>
+      <code id="np-filename" style="font-size: 12px;"></code>
+    </div>
+    <pre id="np-output" style="max-height: 400px; overflow-y: auto;"></pre>
+  </div>
+</div>
+
+<style>
+  .new-post-form { max-width: 100%; }
+  .form-row { margin-bottom: 12px; }
+  .form-row label {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-heading);
+    margin-bottom: 3px;
+  }
+  .form-row input, .form-row select, .form-row textarea {
+    width: 100%;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    padding: 6px 8px;
+    background: var(--bg-content);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+  }
+  .form-row textarea { resize: vertical; }
+  .form-actions { display: flex; gap: 8px; margin: 15px 0; }
+  .form-btn {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    background: var(--bg-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--border-main);
+    cursor: pointer;
+    text-transform: lowercase;
+  }
+  .form-btn:hover { background: var(--border-main); color: var(--bg-content); }
+</style>
+
+<script>
+(function() {
+  const typeEl = document.getElementById('np-type');
+  const titleEl = document.getElementById('np-title');
+  const projectEl = document.getElementById('np-project');
+  const descEl = document.getElementById('np-desc');
+  const contentEl = document.getElementById('np-content');
+  const outputEl = document.getElementById('np-output');
+  const filenameEl = document.getElementById('np-filename');
+  const outputWrap = document.getElementById('np-output-wrap');
+  const copyBtn = document.getElementById('np-copy');
+  const downloadBtn = document.getElementById('np-download');
+
+  const starters = {
+    devlog: '## What I worked on\n\n\n## What I learned\n\n\n## Next up\n\n',
+    til: '## TIL\n\n\n## Why it matters\n\n\n## Links\n\n',
+    update: '## Status\n\n\n## What changed\n\n',
+    article: ''
+  };
+
+  // Pre-fill starter content when type changes
+  typeEl.addEventListener('change', () => {
+    if (!contentEl.value.trim()) {
+      contentEl.value = starters[typeEl.value] || '';
+    }
+  });
+
+  function slugify(s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+
+  function today() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function generate() {
+    const type = typeEl.value;
+    const title = titleEl.value.trim();
+    const project = projectEl.value;
+    const desc = descEl.value.trim();
+    let content = contentEl.value;
+
+    if (!title) { titleEl.focus(); return; }
+
+    if (!content.trim()) {
+      content = starters[type] || '';
+    }
+
+    const slug = slugify(title);
+    const filename = slug + '.md';
+
+    let md = '---\n';
+    md += 'title: "' + title.replace(/"/g, '\\"') + '"\n';
+    md += 'date: ' + today() + '\n';
+    md += 'type: ' + type + '\n';
+    if (project) md += 'project: ' + project + '\n';
+    if (desc) md += 'description: "' + desc.replace(/"/g, '\\"') + '"\n';
+    md += '---\n\n';
+
+    if (type === 'article' && !content.trim()) {
+      md += '# ' + title + '\n\n';
+    }
+    md += content;
+
+    outputEl.textContent = md;
+    filenameEl.textContent = 'src/blog/' + filename;
+    outputWrap.style.display = '';
+    copyBtn.style.display = '';
+    downloadBtn.style.display = '';
+
+    // Store for download
+    downloadBtn.onclick = function() {
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    };
+  }
+
+  document.getElementById('np-generate').addEventListener('click', generate);
+
+  copyBtn.addEventListener('click', function() {
+    navigator.clipboard.writeText(outputEl.textContent).then(() => {
+      copyBtn.textContent = 'copied!';
+      setTimeout(() => { copyBtn.textContent = 'copy to clipboard'; }, 1500);
+    });
+  });
+
+  // Keyboard shortcut: Ctrl/Cmd+Enter to generate
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      generate();
+    }
+  });
+})();
+</script>

@@ -4,7 +4,15 @@
   "description": "Simple blog and portfolio for building in public",
   "scripts": {
     "start": "eleventy --serve",
-    "build": "eleventy"
+    "build": "eleventy",
+    "new": "bash new-post.sh",
+    "devlog": "bash new-post.sh --devlog",
+    "til": "bash new-post.sh --til",
+    "update": "bash new-post.sh --update",
+    "project": "bash new-project.sh",
+    "content": "bash content.sh",
+    "publish": "bash publish.sh",
+    "codeAdjust": "bash code-adjust.sh"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1"

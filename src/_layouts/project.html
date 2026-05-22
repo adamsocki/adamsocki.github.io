@@ -49,4 +49,29 @@ layout: base.html
   <div class="project-detail-content">
     {{ content }}
   </div>
+
+  {%- if projectSlug -%}
+    {%- assign hasProjectPosts = false -%}
+    {%- for post in collections.posts -%}
+      {%- if post.data.project == projectSlug -%}
+        {%- assign hasProjectPosts = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if hasProjectPosts -%}
+    <div class="project-blog-posts">
+      <h3>Blog Posts</h3>
+      {%- for post in collections.posts -%}
+        {%- if post.data.project == projectSlug -%}
+        <div class="project-blog-entry">
+          {%- if post.data.type and post.data.type != "article" -%}
+            <span class="post-type-badge post-type-{{ post.data.type }}">{{ post.data.type }}</span>
+          {%- endif -%}
+          <a href="{{ post.url | url }}">{{ post.data.title }}</a>
+          <span class="project-blog-date">{{ post.date | date: "%b %d, %Y" }}</span>
+        </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+  {%- endif -%}
 </article>

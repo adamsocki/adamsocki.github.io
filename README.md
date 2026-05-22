@@ -13,6 +13,17 @@ npm start
 
 # Build for production
 npm run build
+
+# Create posts/projects
+npm run content
+npm run new
+npm run project
+
+# Build, commit, and push content changes
+npm run publish
+
+# Build, commit, and push site code/template/style changes
+npm run codeAdjust
 ```
 
 Visit `http://localhost:8080` to see your blog.
@@ -39,7 +50,11 @@ Your content here...
 
 ### Project Pages (HTML or Markdown)
 
-Create files in `src/projects/` using either HTML or Markdown format.
+Create files in `src/_projects/` using Markdown, or run:
+
+```bash
+npm run project
+```
 
 ### Homepage
 

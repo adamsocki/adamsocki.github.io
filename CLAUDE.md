@@ -17,6 +17,26 @@ npm start
 
 # Build static site to _site/ directory
 npm run build
+
+# Create a new blog post (interactive)
+npm run new
+
+# Quick short-form posts
+npm run devlog        # devlog entry
+npm run til           # today I learned
+npm run update        # status update
+
+# Create a new project page
+npm run project
+
+# Unified content menu for posts, projects, and publishing
+npm run content
+
+# Or use the shell script directly
+./new-post.sh "My Post Title"
+./new-post.sh --devlog "What I worked on"
+./new-post.sh --til "Something I learned"
+./new-project.sh "My Project"
 ```
 
 ## Architecture
@@ -30,15 +50,19 @@ npm run build
 ### Directory Structure
 ```
 src/
-├── _layouts/          # Nunjucks templates
-│   └── base.html      # Main layout with banner, sidebar, and content area
+├── _layouts/          # Liquid templates
+│   ├── base.html      # Main layout with banner, sidebar, and content area
+│   ├── blog.html      # Blog post layout (shows type badge, project link, summary)
+│   └── project.html   # Project detail layout (shows related blog posts)
 ├── _projects/         # Project markdown files (for projects collection)
-├── blog/              # Blog post markdown files (tagged with 'post')
+├── blog/              # Blog post markdown files
+│   └── blog.11tydata.js  # Default frontmatter for posts (layout, tags, type, project)
 ├── css/
 │   └── style.css      # k-punk inspired retro styling (Win98-ish aesthetic)
 ├── assets/            # Static assets (images, etc.)
 ├── index.html         # Homepage (displays recent posts in reverse chronological order)
-├── blog-list.html     # Blog listing page (shows all posts with dates)
+├── blog-list.html     # Blog listing page with type/project filters
+├── new-post.html      # Web-based post creator (fill in fields, download .md)
 └── projects-list.html # Projects grid (uses collections.projects)
 ```
 
@@ -46,21 +70,26 @@ src/
 Eleventy automatically creates collections:
 - **`collections.post`**: All files tagged with `tags: post` (blog posts)
 - **`collections.projects`**: All files in `src/_projects/*.md` (defined in `.eleventy.js`)
+- **`collections.projectSlugs`**: Unique project slugs used across blog posts (for filters)
+- **`collections.postsByProject`**: Map of project slug → posts (for project pages)
 
 ### Content Format
 
 **Blog posts** (`src/blog/*.md`):
 ```yaml
 ---
-layout: base.html
 title: Your Post Title
 description: Brief description
 date: 2025-12-26
-tags: post  # REQUIRED for sidebar archives and homepage display
+type: article       # article (default), devlog, til, or update
+project: my-project # optional: links post to a project by slug
 ---
 ```
+- `layout`, `tags: post` are set automatically via `blog.11tydata.js` — no need to specify them
 - Posts appear in sidebar archives and on homepage in reverse chronological order
-- Date format is used for display (e.g., "December 26, 2025")
+- The `project` field links a post to a project (must match a project's `projectSlug`)
+- Post types: `article` (full writeup), `devlog` (work log), `til` (today I learned), `update` (status note)
+- The blog list page (`/blog-list/`) has filters for both post type and project
 
 **Project files** (`src/_projects/*.md`):
 ```yaml
@@ -68,6 +97,7 @@ tags: post  # REQUIRED for sidebar archives and homepage display
 title: "Project Title"
 description: "One-liner description for projects page"
 status: "Active"  # or "Learning", "Planning", "Archived"
+projectSlug: "my-project"  # used to link blog posts to this project
 tags:
   - "JavaScript"
   - "React"
@@ -78,6 +108,15 @@ blogPost: "/blog/project-writeup/"
 ```
 - Projects are displayed in `src/projects-list.html` using the `collections.projects` collection
 - Status badges have predefined styles in CSS (`.status-active`, `.status-learning`, `.status-planning`, `.status-archived`)
+- If a project has a `projectSlug`, its page will automatically show all blog posts tagged with that project
+
+### Creating New Posts
+There are several ways to create content, designed to minimize friction:
+0. **Unified menu**: `npm run content` - choose article, devlog, TIL, update, project, or publish
+1. **Shell script**: `./new-post.sh` or `npm run new` — interactive, scaffolds all frontmatter
+2. **Quick commands**: `npm run devlog`, `npm run til`, `npm run update` — for short-form posts
+3. **Project script**: `./new-project.sh` or `npm run project` - scaffolds a project page in `src/_projects/`
+4. **Web interface**: Visit `/new-post/` on the site — fill in fields, download the .md file
 
 ### Templating & Layout
 - Main layout: `src/_layouts/base.html`

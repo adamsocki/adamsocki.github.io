@@ -856,6 +856,128 @@ em, i {
   border-top: 1px solid var(--border-lighter);
 }
 
+/* Post Type Badges */
+.post-type-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1px 5px;
+  border: 1px solid var(--border-light);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.post-type-devlog {
+  color: #4a9d4a;
+  border-color: #4a9d4a;
+}
+
+.post-type-til {
+  color: #cc9900;
+  border-color: #cc9900;
+}
+
+.post-type-update {
+  color: #4a7d9d;
+  border-color: #4a7d9d;
+}
+
+/* Project Badge on posts */
+.post-project-badge {
+  display: inline-block;
+  font-size: 10px;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+  padding: 1px 5px;
+  background: var(--bg-accent);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  margin-left: 6px;
+}
+
+/* Blog List Filters */
+.blog-filters {
+  margin-bottom: 20px;
+  padding: 8px 10px;
+  background: var(--bg-accent);
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.filter-btn {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  background: var(--bg-content);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  padding: 2px 8px;
+  cursor: pointer;
+  text-transform: lowercase;
+}
+
+.filter-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-main);
+}
+
+.filter-btn.active {
+  background: var(--border-main);
+  color: var(--bg-content);
+  border-color: var(--border-main);
+}
+
+.filter-sep {
+  color: var(--text-tertiary);
+  margin: 0 4px;
+  font-size: 11px;
+}
+
+/* Project Blog Posts section on project pages */
+.project-blog-posts {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-lighter);
+}
+
+.project-blog-posts h3 {
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-heading);
+  margin-bottom: 10px;
+  padding: 5px 8px;
+  background: var(--bg-accent);
+  border-left: 3px solid var(--border-main);
+}
+
+.project-blog-entry {
+  padding: 5px 8px;
+  margin-bottom: 3px;
+  border: 1px solid transparent;
+  font-size: 12px;
+}
+
+.project-blog-entry:hover {
+  border-color: var(--border-lighter);
+  background: var(--bg-accent);
+}
+
+.project-blog-entry a {
+  color: var(--link-primary);
+}
+
+.project-blog-date {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+}
+
 /* Mobile */
 @media (max-width: 640px) {
   #container {
