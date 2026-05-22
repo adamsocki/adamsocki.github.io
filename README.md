@@ -1,108 +1,145 @@
 # Blog - Building in Public
 
-A simple blog and portfolio for sharing ongoing projects and learnings.
+A small Eleventy blog and project portfolio for writing about ongoing work.
 
-## Getting Started
+## Commands
 
 ```bash
 # Install dependencies
 npm install
 
-# Start dev server (with live reload)
+# Preview locally at http://localhost:8080
 npm start
 
-# Build for production
+# Build the production site into _site/
 npm run build
+```
 
-# Create posts/projects
+## Content Workflow
+
+Use these for posts and project pages. These commands create markdown files in
+the content folders.
+
+```bash
+# Menu for content actions
 npm run content
+
+# Create a blog post
 npm run new
+npm run devlog
+npm run til
+npm run update
+
+# Create a project page
 npm run project
+```
 
-# Build, commit, and push content changes
-npm run publish
+Blog posts live in `src/blog/`. They use defaults from
+`src/blog/blog.11tydata.js`, so new posts only need frontmatter like this:
 
-# Build, commit, and push site code/template/style changes
-npm run codeAdjust
+```markdown
+---
+title: "Post title"
+date: 2026-05-22
+type: article
+project: trader
+description: "Optional one-line summary"
+---
 
-# Open local-only browser drafting tools
+# Post title
+```
+
+Supported post types are `article`, `devlog`, `til`, and `update`.
+The `project` field is optional. When used, it should match a project slug from
+`src/_projects/`.
+
+Project pages live in `src/_projects/` and use this shape:
+
+```markdown
+---
+layout: project.html
+title: "Project title"
+description: "One-line description"
+date: 2026-05-22
+status: "Active"
+projectSlug: "project-slug"
+tags:
+  - "Project"
+blogPost: ""
+---
+
+# Project title
+```
+
+Posts and projects are sorted newest first by frontmatter `date`.
+
+## Local Drafting Tools
+
+These open local-only browser tools from the `tools/` folder. They do not run a
+dev server and they are not published as site pages.
+
+```bash
 npm run postTool
 npm run projectTool
 ```
 
-Visit `http://localhost:8080` to see your blog.
+The tools generate markdown you can copy or download, then place in
+`src/blog/` or `src/_projects/`.
 
-## Writing Content
+## Publishing
 
-### Blog Posts (Markdown)
-
-Create a new file in `src/blog/` with this format:
-
-```markdown
----
-layout: base.html
-title: Your Post Title
-description: Brief description
-date: 2025-12-26
-tags: post
----
-
-# Your Post Title
-
-Your content here...
-```
-
-### Project Pages (HTML or Markdown)
-
-Create files in `src/_projects/` using Markdown, or run:
+This site deploys through Netlify. `netlify.toml` runs:
 
 ```bash
-npm run project
+npm run build
 ```
 
-### Homepage
+and publishes `_site/`.
 
-Edit `src/index.html` to update your projects list and intro text.
+Use the publish commands based on what changed:
 
-## Deployment
+```bash
+# Commit and push content changes from src/blog/ and src/_projects/
+npm run publish
 
-### GitHub Pages
-
-1. Push your code to GitHub
-2. Go to Settings > Pages
-3. Source: GitHub Actions
-4. The workflow in `.github/workflows/deploy.yml` will auto-deploy on push to main
-
-### Netlify
-
-1. Push your code to GitHub
-2. Go to [Netlify](https://netlify.com)
-3. Click "New site from Git"
-4. Select your repo
-5. Netlify will auto-detect settings from `netlify.toml`
-
-### Vercel
-
-1. Push your code to GitHub
-2. Go to [Vercel](https://vercel.com)
-3. Import your repository
-4. Build command: `npm run build`
-5. Output directory: `_site`
-
-## Structure
-
-```
-src/
-├── _layouts/       # HTML layouts
-│   └── base.html   # Main layout
-├── blog/           # Blog posts (markdown)
-├── projects/       # Project pages
-├── css/            # Stylesheets
-└── index.html      # Homepage
+# Commit and push site code, layout, style, script, and tool changes
+npm run codeAdjust
 ```
 
-## Customization
+Both commands build before committing. After pushing, Netlify rebuilds the live
+site from the GitHub repo.
 
-- Edit `src/css/style.css` for styling
-- Modify `src/_layouts/base.html` for layout changes
-- Update navigation in the base layout
+## Project Structure
+
+```text
+.
+├── .eleventy.js          # Eleventy collections, filters, and build config
+├── netlify.toml          # Netlify build settings
+├── src/
+│   ├── _includes/        # Shared template partials
+│   ├── _layouts/         # Base, blog, and project layouts
+│   ├── _projects/        # Project markdown pages
+│   ├── blog/             # Blog markdown posts
+│   ├── css/              # Site styles
+│   ├── blog-list.html    # Blog archive and filters
+│   ├── index.html        # Homepage
+│   └── projects-list.html
+├── tools/
+│   ├── post-tool.html
+│   └── project-tool.html
+├── content.sh
+├── new-post.sh
+├── new-project.sh
+├── post-tool.sh
+├── project-tool.sh
+├── publish.sh
+└── code-adjust.sh
+```
+
+## Editing Notes
+
+- Edit `src/css/style.css` for visual changes.
+- Edit `src/_layouts/base.html` for global page chrome and navigation.
+- Edit `src/_layouts/blog.html` for individual blog posts.
+- Edit `src/_layouts/project.html` for individual project pages.
+- Edit `src/blog-list.html` and `src/projects-list.html` for archive pages.

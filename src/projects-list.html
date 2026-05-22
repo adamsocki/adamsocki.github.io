@@ -7,7 +7,6 @@ permalink: /projects-list/index.html
 <h2>Curated Projects</h2>
 
 <div class="projects-grid">
-  {%- for project in collections.projects -%}
-    {% include "project-card.html" project: project %}
-  {%- endfor -%}
+    {%- for project in collections.projects -%} {% include "project-card.html"
+    project: project %} {%- endfor -%}
 </div>

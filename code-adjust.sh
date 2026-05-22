@@ -33,7 +33,6 @@ CODE_PATHS=(
   "src/index.html"
   "src/blog-list.html"
   "src/projects-list.html"
-  "src/new-post.html"
   "content.sh"
   "new-post.sh"
   "new-project.sh"
