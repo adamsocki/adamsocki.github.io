@@ -12,7 +12,9 @@
     "project": "bash new-project.sh",
     "content": "bash content.sh",
     "publish": "bash publish.sh",
-    "codeAdjust": "bash code-adjust.sh"
+    "codeAdjust": "bash code-adjust.sh",
+    "postTool": "bash post-tool.sh",
+    "projectTool": "bash project-tool.sh"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1"

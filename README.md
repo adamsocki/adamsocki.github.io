@@ -24,6 +24,10 @@ npm run publish
 
 # Build, commit, and push site code/template/style changes
 npm run codeAdjust
+
+# Open local-only browser drafting tools
+npm run postTool
+npm run projectTool
 ```
 
 Visit `http://localhost:8080` to see your blog.

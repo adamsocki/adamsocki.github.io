@@ -37,8 +37,11 @@ CODE_PATHS=(
   "content.sh"
   "new-post.sh"
   "new-project.sh"
+  "post-tool.sh"
+  "project-tool.sh"
   "publish.sh"
   "code-adjust.sh"
+  "tools"
 )
 
 CHANGED=$(git status --porcelain -- "${CODE_PATHS[@]}" 2>/dev/null)

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Project Tool</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f0f2ed;
+      --panel: #fbfcf7;
+      --ink: #20231c;
+      --muted: #69705e;
+      --line: #cbd2c1;
+      --accent: #4f6b3f;
+      --accent-ink: #ffffff;
+      --code: #e8ebdf;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121510;
+        --panel: #1c2118;
+        --ink: #eef3e8;
+        --muted: #adb8a2;
+        --line: #343d2d;
+        --accent: #a8cf8d;
+        --accent-ink: #182313;
+        --code: #283023;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(920px, calc(100vw - 32px));
+      margin: 36px auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      margin: 0 0 8px;
+    }
+
+    p {
+      color: var(--muted);
+      margin: 0;
+      max-width: 62ch;
+    }
+
+    .tool {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wide { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font: 700 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      padding: 9px 10px;
+    }
+
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+    }
+
+    button {
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--accent-ink);
+      cursor: pointer;
+      font: 700 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      padding: 10px 14px;
+      text-transform: lowercase;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .output {
+      display: none;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    code, pre {
+      background: var(--code);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    code { padding: 2px 4px; }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 680px) {
+      .grid { grid-template-columns: 1fr; }
+      main { margin: 20px auto; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Project Tool</h1>
+      <p>Local-only drafting helper. Generate markdown, then put the file in <code>src/_projects/</code>.</p>
+    </header>
+
+    <section class="tool">
+      <div class="grid">
+        <div class="wide">
+          <label for="title">Title</label>
+          <input id="title" placeholder="project name" autofocus>
+        </div>
+
+        <div class="wide">
+          <label for="description">Description</label>
+          <input id="description" placeholder="one-line project description">
+        </div>
+
+        <div>
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="Active">Active</option>
+            <option value="Learning">Learning</option>
+            <option value="Planning">Planning</option>
+            <option value="Paused">Paused</option>
+            <option value="Archived">Archived</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="slug">Project Slug</label>
+          <input id="slug" placeholder="auto from title">
+        </div>
+
+        <div class="wide">
+          <label for="tags">Tags</label>
+          <input id="tags" placeholder="comma-separated, e.g. React, Bun, Trading">
+        </div>
+
+        <div>
+          <label for="repoUrl">Repo URL</label>
+          <input id="repoUrl" placeholder="optional">
+        </div>
+
+        <div>
+          <label for="demoUrl">Demo URL</label>
+          <input id="demoUrl" placeholder="optional">
+        </div>
+
+        <div class="wide">
+          <label for="blogPost">Featured Blog Post</label>
+          <input id="blogPost" placeholder="optional, e.g. /posts/my-post/">
+        </div>
+
+        <div class="wide">
+          <label for="notes">Starter Body</label>
+          <textarea id="notes">## Overview
+
+## What I am building
+
+## Notes
+</textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="generate">generate file</button>
+        <button id="copy" class="secondary" hidden>copy markdown</button>
+        <button id="download" class="secondary" hidden>download .md</button>
+      </div>
+
+      <div class="output" id="outputWrap">
+        <label>Filename</label>
+        <code id="filename"></code>
+        <pre id="output"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const titleEl = document.getElementById('title');
+    const descriptionEl = document.getElementById('description');
+    const statusEl = document.getElementById('status');
+    const slugEl = document.getElementById('slug');
+    const tagsEl = document.getElementById('tags');
+    const repoUrlEl = document.getElementById('repoUrl');
+    const demoUrlEl = document.getElementById('demoUrl');
+    const blogPostEl = document.getElementById('blogPost');
+    const notesEl = document.getElementById('notes');
+    const outputWrap = document.getElementById('outputWrap');
+    const outputEl = document.getElementById('output');
+    const filenameEl = document.getElementById('filename');
+    const copyBtn = document.getElementById('copy');
+    const downloadBtn = document.getElementById('download');
+
+    let currentMarkdown = '';
+    let currentFilename = '';
+
+    function slugify(value) {
+      return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    function escapeYaml(value) {
+      return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
+    function today() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    titleEl.addEventListener('input', () => {
+      if (!slugEl.dataset.touched) {
+        slugEl.value = slugify(titleEl.value);
+      }
+    });
+
+    slugEl.addEventListener('input', () => {
+      slugEl.dataset.touched = 'true';
+    });
+
+    function tagLines(rawTags) {
+      const tags = rawTags.split(',').map((tag) => tag.trim()).filter(Boolean);
+      if (!tags.length) return 'tags:\n  - "Project"\n';
+      return `tags:\n${tags.map((tag) => `  - "${escapeYaml(tag)}"`).join('\n')}\n`;
+    }
+
+    function generate() {
+      const title = titleEl.value.trim();
+      const description = descriptionEl.value.trim();
+      const slug = slugEl.value.trim() || slugify(title);
+      const status = statusEl.value;
+      const repoUrl = repoUrlEl.value.trim();
+      const demoUrl = demoUrlEl.value.trim();
+      const blogPost = blogPostEl.value.trim();
+      const body = notesEl.value.trim();
+
+      if (!title) {
+        titleEl.focus();
+        return;
+      }
+
+      currentFilename = `${slug}.md`;
+      let markdown = '---\n';
+      markdown += 'layout: project.html\n';
+      markdown += `title: "${escapeYaml(title)}"\n`;
+      markdown += `description: "${escapeYaml(description)}"\n`;
+      markdown += `date: ${today()}\n`;
+      markdown += `status: "${escapeYaml(status)}"\n`;
+      markdown += `projectSlug: "${escapeYaml(slug)}"\n`;
+      markdown += tagLines(tagsEl.value);
+      markdown += repoUrl ? `repoUrl: "${escapeYaml(repoUrl)}"\n` : '# repoUrl: ""\n';
+      markdown += demoUrl ? `demoUrl: "${escapeYaml(demoUrl)}"\n` : '# demoUrl: ""\n';
+      markdown += `blogPost: "${escapeYaml(blogPost)}"\n`;
+      markdown += '---\n\n';
+      markdown += `# ${title}\n\n`;
+      markdown += body ? `${body}\n` : '';
+
+      currentMarkdown = markdown;
+      filenameEl.textContent = `src/_projects/${currentFilename}`;
+      outputEl.textContent = markdown;
+      outputWrap.style.display = 'block';
+      copyBtn.hidden = false;
+      downloadBtn.hidden = false;
+    }
+
+    document.getElementById('generate').addEventListener('click', generate);
+
+    copyBtn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(currentMarkdown);
+      copyBtn.textContent = 'copied';
+      setTimeout(() => { copyBtn.textContent = 'copy markdown'; }, 1200);
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const blob = new Blob([currentMarkdown], { type: 'text/markdown' });
+      const anchor = document.createElement('a');
+      anchor.href = URL.createObjectURL(blob);
+      anchor.download = currentFilename;
+      anchor.click();
+      URL.revokeObjectURL(anchor.href);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        generate();
+      }
+    });
+  </script>
+</body>
+</html>
