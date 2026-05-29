@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOINC Server Setup Guide - Hello World for urban@home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="banner">
+    <h1><a href="/">building in public</a></h1>
+    <p class="description">ongoing projects and updates</p>
+  </div>
+
+  <div id="container">
+    <div id="content">
+      
+<div class="back-link">
+  <a href="/blog-list/">&larr; Back to Blog</a>&nbsp;&middot;&nbsp; <a href="/_projects/urban_at_home_proj/">urban@home - BOINC</a></div>
+
+<article class="blog-post">
+  <header class="blog-post-header">
+    <h1>BOINC Server Setup Guide - Hello World for urban@home</h1>
+    <div class="blog-post-meta"><time datetime="Thu Jan 15 2026 00:00:00 GMT+0000 (Coordinated Universal Time)">January 15, 2026</time><span class="post-project-badge">urban-at-home</span></div></header><details class="blog-summary">
+      <summary class="blog-summary-toggle">
+        <span class="summary-caret">▶</span>
+        <span class="summary-label">summary</span>
+      </summary>
+      <div class="blog-summary-content">
+        This page walkthrough of how I plan to set up my own BOINC distributed computing server from scratch. This is the same server setup that is used for projects like SETI@home and Einstein@Home. This guide breaks down the official BOINC cookbook into 15 digestible phases using Claude Opus 4.5, covering everything from VM setup to running your first distributed job. I plan to use this as a way to set up my own BOINC project server. This is for my urban@home project which aims to explore large-scale urban science simulations.
+      </div>
+    </details><div class="blog-post-content">
+    <h1>BOINC Server Setup Guide</h1>
+<h3>by: Adam Socki</h3>
+<p>This guide provides step-by-step instructions for setting up a BOINC server for my <a href="http://adamsocki.github.io/_projects/urban_at_home_proj/">urban@home project</a>. BOINC (Berkeley Open Infrastructure for Network Computing). For those unfamiliar, BOINC is an open-source platform for volunteer computing that allows researchers to deploy computational projects to a distributed network of volunteer computers.</p>
+<h2>My History with BOINC</h2>
+<p>I first encountered BOINC in 1999/2000 when I participated in the SETI@home project using my very first computer, an original iMac G3. I remember watching the screensaver for hours at a time trying to understand what it was doing by trying to decipher the signals being rendered on the screen.</p>
+<p>I have been participating on and off in various BOINC projects over the years. Recently, I decided to explore setting up my own BOINC server for the urban@home project, which focuses on developing distributed simulations of various urban science topics with the goal of utilizing volunteer computing to run large-scale simulations.</p>
+<p>I'm documenting my journey of setting up a BOINC server for urban@home in this blog post.</p>
+<h2>How this Guide was Created</h2>
+<p>This guide was created by following the <a href="https://github.com/BOINC/boinc/wiki/Create-a-BOINC-server-(cookbook)">BOINC cookbook server setup</a> documentation and reinterpreting it using Opus 4.5. One of the challenges I've faced is that the official documentation can be quite dense and difficult to follow. By using Opus, I was hoping to break down the steps into more manageable pieces and provide additional context and explanations where needed.</p>
+<h2>Prompts Used</h2>
+<p>Here are some of the prompts I used to generate this guide:</p>
+<blockquote>
+<p>&quot;I’m trying to implement a BOINC server, but I’m having a hard time following this tutorial. Could you  break it down for me with like every step that I need to take to do from beginning to end https://github.com/BOINC/boinc/wiki/Create-a-BOINC-server-(cookbook) tThe goal here is to create my own distributed project that I’ll eventually deploy, but I want to like understand how it all works first.&quot;</p>
+</blockquote>
+<p>This prompt generated the initial outline and structure of the guide with very detailed steps but lacked context to understand why each step was necessary or how it fit into the overall BOINC server architecture.</p>
+<p>I followed up with the following prompt:</p>
+<blockquote>
+<p>&quot;Can you also just provide like kind of a narrative written description of what it is that we’re doing and what it is that we will eventually produce at the end? I guess I’m just kind of confused like, how does this relate to actual BOINC projects that I contribute to like Einstein at home?&quot;</p>
+</blockquote>
+<p>I then asked to combine the two outputs into a single cohesive guide with both detailed steps and contextual explanations. This is the result:</p>
+<div class="section-divider">▼ The Guide ▼</div>
+<h1>Building Your Own BOINC Server: A Complete Guide</h1>
+<h2>The Big Picture: What Are We Actually Building?</h2>
+<p>When you contribute to projects like Einstein@Home, SETI@Home, or Rosetta@home, you're running the <strong>BOINC client</strong>. It downloads work, crunches numbers, and uploads results. But someone had to build the infrastructure on the other end—the system that creates the work, distributes it to thousands of volunteers, collects the results, and processes them into scientific findings.</p>
+<p><strong>That's what you're building in this guide: the server side of a BOINC project.</strong></p>
+<h3>The Two Halves of BOINC</h3>
+<p>BOINC is really two pieces of software that talk to each other over the internet:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>What It Does</th>
+<th>Who Runs It</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Client</strong></td>
+<td>Downloads work, runs computations, uploads results</td>
+<td>Volunteers (you already know this part)</td>
+</tr>
+<tr>
+<td><strong>Server</strong></td>
+<td>Creates work, distributes it, validates results, awards credit</td>
+<td>Project operators (what you're building)</td>
+</tr>
+</tbody>
+</table>
+<p>Every BOINC project runs their own server infrastructure. Einstein@Home has theirs at UW-Milwaukee. World Community Grid runs theirs at IBM. When you finish this guide, you'll have your own—smaller, but functionally identical.</p>
+<h3>The Server's Job: A Work Coordinator</h3>
+<p>Think of the BOINC server as a job shop coordinator managing a massive distributed workforce. Here's the lifecycle of work in a BOINC project:</p>
+<ol>
+<li>
+<p><strong>You have a computation problem.</strong> Maybe analyzing gravitational wave data, folding proteins, or (in your case potentially) running transportation simulations. The key is that the problem can be split into many independent chunks.</p>
+</li>
+<li>
+<p><strong>You package your analysis code as a &quot;BOINC app.&quot;</strong> This is a compiled executable that reads an input file, does computation, and writes an output file. The tutorial uses a toy example called &quot;uppercase&quot; that converts text to uppercase.</p>
+</li>
+<li>
+<p><strong>You create &quot;work units.&quot;</strong> Each work unit is an input file plus metadata saying &quot;run this app on this input.&quot; In Einstein@Home, each work unit might be &quot;analyze this 30-second chunk of LIGO data.&quot;</p>
+</li>
+<li>
+<p><strong>The scheduler hands out work.</strong> When a volunteer's client connects and says &quot;I have an Intel CPU running Linux, give me work,&quot; the scheduler finds appropriate work units and sends them.</p>
+</li>
+<li>
+<p><strong>Results come back.</strong> The client runs your app, produces output, and uploads it.</p>
+</li>
+<li>
+<p><strong>Validation happens.</strong> BOINC typically sends the same work to multiple volunteers. The validator compares results—if they match, great. If not, send to more volunteers until you get consensus. This protects against errors and cheating.</p>
+</li>
+<li>
+<p><strong>Assimilation processes valid results.</strong> Once validated, the assimilator does something with the output—stores it in a database, feeds it to the next analysis stage, etc.</p>
+</li>
+<li>
+<p><strong>Credit gets awarded.</strong> Volunteers receive computation credit, feeding the leaderboards and gamification that keeps people engaged.</p>
+</li>
+</ol>
+<h3>What You'll Have at the End</h3>
+<p>When you complete this guide, you'll have a fully functional BOINC project with:</p>
+<ul>
+<li>A <strong>public website</strong> where volunteers can create accounts and see statistics</li>
+<li>An <strong>admin interface</strong> for managing applications and monitoring the system</li>
+<li>A <strong>scheduler</strong> that distributes work to any BOINC client that connects</li>
+<li><strong>Daemon processes</strong> (feeder, transitioner, validator, assimilator, file deleter) that manage the job lifecycle</li>
+<li>A <strong>sample application</strong> that actually runs on volunteer machines</li>
+</ul>
+<p>You could literally tell someone on another computer to install BOINC, enter your server's URL, and start contributing—just like Einstein@Home, but with your workload.</p>
+<hr>
+<h2>Phase 1: Setting Up the Virtual Machine</h2>
+<h3>Why a VM?</h3>
+<p>We're using VirtualBox to create an isolated Ubuntu environment. This approach has several advantages:</p>
+<ul>
+<li><strong>Snapshots</strong>: You can save the VM state at any point and roll back if something goes wrong</li>
+<li><strong>Portability</strong>: You can move the VM image to different hardware later</li>
+<li><strong>Isolation</strong>: Your BOINC server won't interfere with your main system</li>
+<li><strong>Reproducibility</strong>: You can delete everything and start fresh easily</li>
+</ul>
+<p>You could do all of this on bare metal (a real server), and eventually you'd want to for a production deployment. But for learning, a VM is ideal.</p>
+<h3>Step 1.1: Install VirtualBox</h3>
+<pre><code>Download VirtualBox 7.0 from https://virtualbox.org
+Also download the Guest Additions ISO (improves VM performance)
+Install VirtualBox on your host machine (Windows, Mac, or Linux)
+</code></pre>
+<h3>Step 1.2: Get Ubuntu</h3>
+<pre><code>Download Ubuntu 22.04 LTS ISO from https://ubuntu.com/download/desktop
+(Alternative: Xubuntu uses less RAM if your machine is constrained)
+</code></pre>
+<h3>Step 1.3: Create the Virtual Machine</h3>
+<p>Open VirtualBox and click &quot;New&quot; to create a VM:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td><code>BOINC</code></td>
+<td>Only alphanumerics, <code>-</code> and <code>.</code> allowed (becomes hostname)</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Linux</td>
+<td></td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Ubuntu (64-bit)</td>
+<td></td>
+</tr>
+<tr>
+<td>RAM</td>
+<td>4096 MB minimum</td>
+<td>BOINC daemons + MySQL + Apache need memory</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>1 core minimum</td>
+<td>More helps during compilation</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td>25 GB minimum</td>
+<td>Project files, database, logs accumulate</td>
+</tr>
+</tbody>
+</table>
+<p>In the &quot;Unattended Guest OS Install Setup&quot; dialog:</p>
+<ul>
+<li>Username: <code>boincadm</code> (this will be your main account)</li>
+<li>Password: choose something secure</li>
+<li>Check &quot;Guest Additions&quot; to install automatically</li>
+</ul>
+<h3>Step 1.4: Start the VM</h3>
+<p>Click &quot;Start&quot; in VirtualBox. The VM will boot from the Ubuntu ISO and install automatically. This takes several minutes—go get coffee.</p>
+<p>Once complete, you'll see the Ubuntu desktop with a login screen.</p>
+<hr>
+<h2>Phase 2: Network Configuration</h2>
+<h3>Why This Matters</h3>
+<p>By default, VirtualBox uses NAT networking, which means your VM can access the internet but nothing can access the VM. For a BOINC server, you need the opposite—BOINC clients need to reach your server to get work.</p>
+<p>Bridged networking puts your VM directly on your local network with its own IP address, as if it were a separate physical computer.</p>
+<h3>Step 2.1: Shut Down the VM</h3>
+<p>Close the VM window and select &quot;Power Off&quot; (not &quot;Save State&quot;).</p>
+<h3>Step 2.2: Configure Bridged Networking</h3>
+<p>In VirtualBox Manager:</p>
+<ol>
+<li>Right-click your VM → Settings</li>
+<li>Click &quot;Network&quot;</li>
+<li>Change &quot;Attached to:&quot; from <code>NAT</code> to <code>Bridged Adapter</code></li>
+<li>Click OK</li>
+</ol>
+<h3>Step 2.3: Start VM and Get IP Address</h3>
+<p>Start the VM, log in as <code>boincadm</code>, and open a terminal (click the grid icon at bottom-left, search for &quot;Terminal&quot;).</p>
+<pre><code class="language-bash">ip address
+</code></pre>
+<p>Look for output like this:</p>
+<pre><code>2: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; ...
+    inet 192.168.1.42/24 ...
+</code></pre>
+<p><strong>Write down the IP address</strong> (e.g., <code>192.168.1.42</code>). You'll use this throughout the rest of the setup. This IP is accessible from your host machine and other computers on your LAN.</p>
+<hr>
+<h2>Phase 3: User Account Setup</h2>
+<h3>The boincadm Account</h3>
+<p>All BOINC project operations run under the <code>boincadm</code> account you created during installation. This account needs sudo (administrator) privileges to install packages and configure services.</p>
+<h3>Step 3.1: Verify Sudo Access</h3>
+<pre><code class="language-bash">sudo whoami
+</code></pre>
+<p>If this prints <code>root</code>, you're good. If not:</p>
+<pre><code class="language-bash">su
+# Enter root password
+adduser boincadm sudo
+exit
+# Log out and back in for changes to take effect
+</code></pre>
+<h3>Step 3.2: Shell Conveniences (Optional but Recommended)</h3>
+<p>Add some safety aliases to prevent accidental file deletion:</p>
+<pre><code class="language-bash">echo &quot;alias rm='rm -i'&quot; &gt;&gt; ~/.bashrc
+echo &quot;alias cp='cp -i'&quot; &gt;&gt; ~/.bashrc
+echo &quot;alias mv='mv -i'&quot; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<h3>Step 3.3: Disable Screen Blanking</h3>
+<p>Go to Settings → Power → Screen Blank → Never</p>
+<p>This prevents the screen from going dark while you're working, which can be annoying in a VM.</p>
+<h3>Step 3.4: Open This Guide in Firefox</h3>
+<p>Open Firefox inside the VM and navigate to this guide (or copy it in). That way you can copy-paste commands directly.</p>
+<hr>
+<h2>Phase 4: Installing Required Packages</h2>
+<h3>What We're Installing and Why</h3>
+<p>A BOINC server requires several software components:</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>git</strong></td>
+<td>Download BOINC source code</td>
+</tr>
+<tr>
+<td><strong>mysql-server</strong></td>
+<td>Database for storing users, work units, results, etc.</td>
+</tr>
+<tr>
+<td><strong>apache2</strong></td>
+<td>Web server for the project website and scheduler</td>
+</tr>
+<tr>
+<td><strong>PHP</strong></td>
+<td>Dynamic web pages (account creation, stats, admin interface)</td>
+</tr>
+<tr>
+<td><strong>autoconf, libtool, pkg-config</strong></td>
+<td>Build tools to compile BOINC</td>
+</tr>
+<tr>
+<td><strong>libcurl, libmysqlclient</strong></td>
+<td>Libraries BOINC needs</td>
+</tr>
+<tr>
+<td><strong>python3, pip</strong></td>
+<td>Scripts and database access</td>
+</tr>
+</tbody>
+</table>
+<h3>Step 4.1: Update System Packages</h3>
+<pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo snap refresh
+</code></pre>
+<h3>Step 4.2: Install Core Dependencies</h3>
+<p>Run each of these commands:</p>
+<pre><code class="language-bash"># Version control
+sudo apt-get -y install git
+
+# Database server
+sudo apt-get -y install mysql-server
+sudo apt-get -y install libmysqlclient-dev
+
+# Note: If MySQL packages fail, use MariaDB instead:
+# sudo apt-get -y install default-mysql-server
+# sudo apt-get -y install libmariadbclient-dev
+# sudo apt-get -y install libmariadb-dev
+
+# Web server
+sudo apt-get -y install apache2
+
+# Build tools
+sudo apt-get -y install autoconf
+sudo apt-get -y install pkg-config
+sudo apt-get -y install libtool
+
+# Required libraries
+sudo apt-get -y install libcurl4-openssl-dev
+
+# Python
+sudo apt-get -y install python3-pip
+sudo apt-get -y install python-is-python3
+
+# PHP and extensions
+sudo apt-get -y install libapache2-mod-php
+sudo apt-get -y install php-mysql
+sudo apt-get -y install php-cli
+sudo apt-get -y install php-gd
+sudo apt-get -y install php-xml
+</code></pre>
+<h3>Step 4.3: Install Python MySQL Connector</h3>
+<pre><code class="language-bash">sudo pip install -U pip
+pip install mysqlclient
+</code></pre>
+<p>This lets Python scripts (including BOINC's backend tools) talk to the MySQL database.</p>
+<hr>
+<h2>Phase 5: Configure MySQL</h2>
+<h3>Why MySQL?</h3>
+<p>BOINC stores everything in a relational database: user accounts, host information, work units, results, credit totals, teams, etc. MySQL (or MariaDB) handles this. Each BOINC project gets its own database.</p>
+<h3>Step 5.1: Secure the MySQL Installation</h3>
+<pre><code class="language-bash">sudo mysql_secure_installation
+</code></pre>
+<p>Answer the prompts:</p>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th>Answer</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Validate passwords?</td>
+<td>yes</td>
+<td>Good practice</td>
+</tr>
+<tr>
+<td>Password strength</td>
+<td>0 (low)</td>
+<td>Fine for development</td>
+</tr>
+<tr>
+<td>Set root password</td>
+<td><code>foobar99</code></td>
+<td>Or whatever you prefer—remember it!</td>
+</tr>
+<tr>
+<td>Remove anonymous users?</td>
+<td>yes</td>
+<td>Security</td>
+</tr>
+<tr>
+<td>Disallow remote root?</td>
+<td>yes</td>
+<td>Security</td>
+</tr>
+<tr>
+<td>Remove test database?</td>
+<td>yes</td>
+<td>Cleanup</td>
+</tr>
+<tr>
+<td>Reload privileges?</td>
+<td>yes</td>
+<td>Apply changes</td>
+</tr>
+</tbody>
+</table>
+<h3>Step 5.2: Create the boincadm MySQL User</h3>
+<p>The BOINC daemons run as the <code>boincadm</code> Linux user, so we need a MySQL user with the same name:</p>
+<pre><code class="language-bash">sudo mysql
+</code></pre>
+<p>In the MySQL prompt:</p>
+<pre><code class="language-sql">CREATE USER 'boincadm'@'localhost' IDENTIFIED BY 'foobar99';
+GRANT ALL ON *.* TO 'boincadm'@'localhost';
+exit
+</code></pre>
+<p>This creates a MySQL user that can create databases, which is needed when we create the BOINC project.</p>
+<h3>Step 5.3: Test the Connection</h3>
+<pre><code class="language-bash">mysql -u boincadm -p
+# Enter password: foobar99
+</code></pre>
+<p>In the MySQL prompt:</p>
+<pre><code class="language-sql">show databases;
+exit
+</code></pre>
+<p>You should see a list of system databases. If this works, MySQL is ready.</p>
+<hr>
+<h2>Phase 6: Configure Apache</h2>
+<h3>The Two-User Problem</h3>
+<p>A BOINC project has two types of software running:</p>
+<ol>
+<li>
+<p><strong>Web server components</strong> (scheduler, file upload handler, PHP pages) — these run under the Apache user account, which is <code>www-data</code> on Ubuntu</p>
+</li>
+<li>
+<p><strong>Daemon processes</strong> (feeder, transitioner, validator, assimilator) — these run under your <code>boincadm</code> account</p>
+</li>
+</ol>
+<p>Both need to read and write the same files (work units, results, etc.). The solution is to put both users in the same Unix group.</p>
+<h3>Step 6.1: Add www-data to the boincadm Group</h3>
+<pre><code class="language-bash">sudo usermod -a -G boincadm www-data
+</code></pre>
+<p>Now the <code>www-data</code> user (Apache) is a member of the <code>boincadm</code> group and can access files owned by that group.</p>
+<h3>Step 6.2: Enable CGI</h3>
+<p>The BOINC scheduler runs as a CGI program—Apache executes it when clients request work. We need to enable this:</p>
+<pre><code class="language-bash">sudo a2enmod cgi
+sudo systemctl restart apache2
+</code></pre>
+<h3>Step 6.3: Verify Apache is Running</h3>
+<p>Open Firefox in the VM and visit <code>http://localhost</code></p>
+<p>You should see the &quot;Apache2 Ubuntu Default Page&quot;. If you see this, Apache is working.</p>
+<hr>
+<h2>Phase 7: Download and Build BOINC</h2>
+<h3>Getting the Source Code</h3>
+<p>BOINC is open source, hosted on GitHub. We'll clone the repository and build the server components.</p>
+<h3>Step 7.1: Clone the BOINC Repository</h3>
+<pre><code class="language-bash">cd ~
+git clone https://github.com/BOINC/boinc.git
+</code></pre>
+<p>This downloads the complete BOINC source code to <code>~/boinc/</code>.</p>
+<h3>Step 7.2: Build the Server Software</h3>
+<pre><code class="language-bash">cd boinc
+./_autosetup
+./configure --disable-client --disable-manager --enable-apps
+make
+</code></pre>
+<p><strong>What these commands do:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>./_autosetup</code></td>
+<td>Generates the configure script from templates</td>
+</tr>
+<tr>
+<td><code>./configure --disable-client --disable-manager --enable-apps</code></td>
+<td>Prepares the build, excluding the client/GUI (we only need server), including sample apps</td>
+</tr>
+<tr>
+<td><code>make</code></td>
+<td>Compiles everything</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> You'll see lots of compiler warnings. Ignore them—warnings are not errors. The build takes several minutes.</p>
+<h3>What Got Built?</h3>
+<p>After compilation, you have:</p>
+<ul>
+<li><code>~/boinc/sched/</code> — Scheduler, file upload handler</li>
+<li><code>~/boinc/tools/</code> — Project creation and management scripts</li>
+<li><code>~/boinc/apps/</code> — Sample applications including &quot;uppercase&quot;</li>
+<li><code>~/boinc/lib/</code> — Libraries for building BOINC apps</li>
+<li><code>~/boinc/db/</code> — Database utilities</li>
+</ul>
+<hr>
+<h2>Phase 8: Create Your BOINC Project</h2>
+<h3>What make_project Does</h3>
+<p>The <code>make_project</code> script is BOINC's project creation wizard. It:</p>
+<ol>
+<li>Creates a MySQL database for your project</li>
+<li>Creates a directory tree with all the files your project needs</li>
+<li>Generates configuration files</li>
+<li>Sets up the web interface</li>
+<li>Creates encryption keys for secure communication</li>
+</ol>
+<h3>Step 8.1: Run make_project</h3>
+<pre><code class="language-bash">cd ~/boinc/tools
+./make_project --db_passwd foobar99 --url_base http://YOUR_IP_ADDRESS test
+</code></pre>
+<p><strong>Replace <code>YOUR_IP_ADDRESS</code> with the IP you noted in Phase 2</strong> (e.g., <code>192.168.1.42</code>).</p>
+<p>The <code>test</code> at the end is your project's short name. It becomes the database name and URL path.</p>
+<p>You'll see output like:</p>
+<pre><code>Creating project 'test' (short name 'test'):
+   PROJECT_ROOT = /home/boincadm/projects/test/
+   PROJECT_HOST = BOINC
+       URL_BASE = http://192.168.1.42/
+  HTML_USER_URL = http://192.168.1.42/test/
+   HTML_OPS_URL = http://192.168.1.42/test_ops/
+        KEY_DIR = /home/boincadm/projects/test/keys/
+        DB_NAME = test
+        DB_HOST = 
+
+Continue? [Y/n] 
+</code></pre>
+<p>Type <code>y</code> and press Enter.</p>
+<h3>Step 8.2: Configure Apache for the Project</h3>
+<p>The project created an Apache configuration file. We need to enable it:</p>
+<pre><code class="language-bash">cd ~/projects/test
+sudo cp test.httpd.conf /etc/apache2/sites-enabled/
+sudo apache2ctl restart
+</code></pre>
+<p>This tells Apache how to serve your project's web pages and where to find the scheduler CGI.</p>
+<h3>Step 8.3: Set Up the Cron Job</h3>
+<p>BOINC needs a maintenance script to run every 5 minutes. This handles things like retrying failed tasks, cleaning up old files, etc.</p>
+<pre><code class="language-bash">crontab -e
+</code></pre>
+<p>If asked which editor to use, choose <code>nano</code> (easiest).</p>
+<p>Add this line at the bottom (it's all one line):</p>
+<pre><code>0,5,10,15,20,25,30,35,40,45,50,55 * * * * cd /home/boincadm/projects/test; /home/boincadm/projects/test/bin/start --cron
+</code></pre>
+<p>Save and exit (in nano: Ctrl+O, Enter, Ctrl+X).</p>
+<h3>Step 8.4: Initialize the Database</h3>
+<pre><code class="language-bash">cd ~/projects/test
+bin/xadd
+</code></pre>
+<p>This populates the database with initial data (platforms, app types, etc.).</p>
+<h3>Step 8.5: Set Up the Admin Interface</h3>
+<p>The admin interface lets you manage applications, view server status, and debug problems. It needs password protection:</p>
+<pre><code class="language-bash">cd ~/projects/test/html/ops
+htpasswd -c .htpasswd boincadm
+# Enter a password when prompted (can be different from your login password)
+</code></pre>
+<p>Test it by visiting <code>http://YOUR_IP_ADDRESS/test_ops</code> in Firefox. Enter username <code>boincadm</code> and the password you just set.</p>
+<h3>Step 8.6: Customize Project Information</h3>
+<p>Edit the project configuration to set your project name:</p>
+<pre><code class="language-bash">cd ~/projects/test/html/project
+nano project.inc
+</code></pre>
+<p>Find and change:</p>
+<ul>
+<li><code>PROJECT</code> → Your project's display name (e.g., &quot;My BOINC Project&quot;)</li>
+<li><code>COPYRIGHT_HOLDER</code> → Your name or organization</li>
+</ul>
+<p>Save and exit.</p>
+<h3>Step 8.7: Start the Project</h3>
+<pre><code class="language-bash">cd ~/projects/test
+bin/start
+</code></pre>
+<p>This launches all the daemon processes that make your project run.</p>
+<h3>Step 8.8: Verify the Website</h3>
+<p>Visit <code>http://YOUR_IP_ADDRESS/test/</code> in Firefox.</p>
+<p>You should see your project's public website! It will have:</p>
+<ul>
+<li>A welcome message with your project name</li>
+<li>Links to create an account, view stats, etc.</li>
+<li>News section (empty for now)</li>
+</ul>
+<p><strong>Congratulations!</strong> You now have a running BOINC project. It just doesn't have any work yet.</p>
+<hr>
+<h2>Phase 9: Create a User Account</h2>
+<h3>Becoming a Volunteer on Your Own Project</h3>
+<p>To test the full workflow, you'll create an account on your project and attach a BOINC client to it.</p>
+<h3>Step 9.1: Register on Your Project</h3>
+<ol>
+<li>Go to <code>http://YOUR_IP_ADDRESS/test/</code></li>
+<li>Click &quot;Join&quot; or &quot;Create Account&quot;</li>
+<li>Enter:
+<ul>
+<li>Name (display name for leaderboards)</li>
+<li>Email address (doesn't need to be real for testing)</li>
+<li>Password</li>
+</ul>
+</li>
+</ol>
+<p>You now have a volunteer account on your project!</p>
+<hr>
+<h2>Phase 10: Install and Configure the BOINC Client</h2>
+<h3>Testing the Full Loop</h3>
+<p>To verify everything works, we'll install the BOINC client on the same VM and have it request work from our server. In a real deployment, clients would be on completely different machines.</p>
+<h3>Step 10.1: Install the BOINC Client</h3>
+<pre><code class="language-bash">sudo add-apt-repository --remove ppa:costamagnagianfranco/boinc
+sudo apt-get install boinc
+</code></pre>
+<h3>Step 10.2: Fix Permissions (Bug Workaround)</h3>
+<p>There's a bug in the Ubuntu BOINC package that requires this fix:</p>
+<pre><code class="language-bash">sudo chown -R boincadm /var/lib/boinc-client
+</code></pre>
+<h3>Step 10.3: Run the Client and Manager</h3>
+<p>You need two terminal windows:</p>
+<p><strong>Terminal 1 — Run the BOINC client:</strong></p>
+<pre><code class="language-bash">cd ~
+boinc
+</code></pre>
+<p>This starts the BOINC core client. Leave this terminal open.</p>
+<p><strong>Terminal 2 — Run the BOINC Manager:</strong></p>
+<pre><code class="language-bash">boincmgr
+</code></pre>
+<p>This opens the graphical BOINC Manager that you're familiar with from volunteering.</p>
+<h3>Step 10.4: Attach to Your Project</h3>
+<p>The BOINC Manager will show an &quot;Add Project&quot; dialog:</p>
+<ol>
+<li>In the URL field, enter: <code>http://YOUR_IP_ADDRESS/test/</code></li>
+<li>Click Next</li>
+<li>Select &quot;Yes, I have an account&quot;</li>
+<li>Enter the email and password you created in Phase 9</li>
+</ol>
+<h3>Step 10.5: Verify the Connection</h3>
+<ol>
+<li>In BOINC Manager, go to View → Advanced View</li>
+<li>Click the &quot;Projects&quot; tab — your project should appear</li>
+<li>Go to Tools → Event Log</li>
+</ol>
+<p>In the Event Log, you'll see the client communicating with your server. It will say something like &quot;Scheduler request completed&quot; but &quot;no work available&quot;.</p>
+<p><strong>This is expected!</strong> We haven't created an application or submitted any work yet. The client has nothing to do.</p>
+<hr>
+<h2>Phase 11: Create an Application</h2>
+<h3>What is a BOINC Application?</h3>
+<p>A BOINC application is a program that:</p>
+<ol>
+<li>Reads one or more input files</li>
+<li>Performs computation</li>
+<li>Writes one or more output files</li>
+<li>Reports progress and CPU time to the BOINC client</li>
+</ol>
+<p>The BOINC infrastructure handles everything else: distributing the app to volunteers, sending input files, collecting output files, validating results, etc.</p>
+<h3>The &quot;Uppercase&quot; Example App</h3>
+<p>BOINC includes a trivial example app called &quot;uppercase&quot; that:</p>
+<ul>
+<li>Reads a file named <code>in</code></li>
+<li>Converts all text to uppercase</li>
+<li>Writes the result to a file named <code>out</code></li>
+<li>Wastes 20 seconds of CPU time (to simulate real computation)</li>
+</ul>
+<p>We'll use this to test our infrastructure.</p>
+<h3>Step 11.1: Register the Application</h3>
+<ol>
+<li>Go to <code>http://YOUR_IP_ADDRESS/test_ops</code> (admin interface)</li>
+<li>Click &quot;Manage applications&quot;</li>
+<li>Add a new application:
+<ul>
+<li>Name: <code>uppercase</code></li>
+<li>Description: <code>Uppercase</code> (or whatever you want)</li>
+</ul>
+</li>
+</ol>
+<p>This creates a database record for the application.</p>
+<h3>Step 11.2: Install Input/Output Templates</h3>
+<p>BOINC uses XML template files to describe what input and output files an application expects. Copy the templates for the uppercase app:</p>
+<pre><code class="language-bash">cd ~/projects/test
+cp ~/boinc/apps/uppercase_in templates/
+cp ~/boinc/apps/uppercase_out templates/
+</code></pre>
+<p><strong>What's in these templates?</strong></p>
+<p><code>uppercase_in</code> describes the input file:</p>
+<ul>
+<li>One input file named &quot;in&quot;</li>
+<li>Downloaded from the server</li>
+</ul>
+<p><code>uppercase_out</code> describes the output file:</p>
+<ul>
+<li>One output file named &quot;out&quot;</li>
+<li>Uploaded back to the server</li>
+</ul>
+<h3>Step 11.3: Configure Validator and Assimilator Daemons</h3>
+<p>Each application needs two daemon processes:</p>
+<table>
+<thead>
+<tr>
+<th>Daemon</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Validator</strong></td>
+<td>Checks if results are correct (compares results from multiple volunteers)</td>
+</tr>
+<tr>
+<td><strong>Assimilator</strong></td>
+<td>Processes validated results (stores them, feeds them to analysis, etc.)</td>
+</tr>
+</tbody>
+</table>
+<p>Edit the project configuration:</p>
+<pre><code class="language-bash">nano ~/projects/test/config.xml
+</code></pre>
+<p>Find the <code>&lt;daemons&gt;</code> section. Add these two daemon entries inside it:</p>
+<pre><code class="language-xml">      &lt;daemon&gt;
+          &lt;cmd&gt;sample_trivial_validator --app uppercase&lt;/cmd&gt;
+      &lt;/daemon&gt;
+      &lt;daemon&gt;
+          &lt;cmd&gt;sample_assimilator --app uppercase&lt;/cmd&gt;
+      &lt;/daemon&gt;
+</code></pre>
+<p><strong>What do these do?</strong></p>
+<ul>
+<li>
+<p><code>sample_trivial_validator</code> — Accepts all results as valid (no actual checking). Fine for testing, but real projects compare results from multiple volunteers.</p>
+</li>
+<li>
+<p><code>sample_assimilator</code> — Moves validated output files to <code>~/projects/test/sample_results/</code>. A real project would do something meaningful with the data.</p>
+</li>
+</ul>
+<p>Save and exit the file.</p>
+<hr>
+<h2>Phase 12: Create an App Version</h2>
+<h3>Applications vs. App Versions</h3>
+<p>In BOINC terminology:</p>
+<ul>
+<li><strong>Application</strong> — An abstract concept (e.g., &quot;uppercase&quot;)</li>
+<li><strong>App Version</strong> — A specific compiled executable for a specific platform (e.g., &quot;uppercase 1.0 for Linux x86_64&quot;)</li>
+</ul>
+<p>You need an app version for each platform you want to support. For this tutorial, we'll just create a Linux version.</p>
+<h3>Step 12.1: Create the Directory Structure</h3>
+<p>BOINC expects app versions in a specific directory layout:</p>
+<pre><code>projects/test/apps/
+    uppercase/           ← application name
+        1.0/             ← version number
+            x86_64-pc-linux-gnu/   ← platform
+                uppercase          ← the executable
+                version.xml        ← metadata
+</code></pre>
+<p>Create this structure:</p>
+<pre><code class="language-bash">cd ~/projects/test/apps
+mkdir -p uppercase/1.0/x86_64-pc-linux-gnu
+</code></pre>
+<h3>Step 12.2: Copy the Executable and Metadata</h3>
+<pre><code class="language-bash">cd ~/projects/test/apps/uppercase/1.0/x86_64-pc-linux-gnu
+cp ~/boinc/apps/uppercase .
+cp ~/boinc/apps/version.xml .
+</code></pre>
+<p>The <code>uppercase</code> file is the compiled executable we built earlier. The <code>version.xml</code> file describes it to BOINC.</p>
+<h3>Step 12.3: Register the App Version</h3>
+<pre><code class="language-bash">cd ~/projects/test
+bin/update_versions
+</code></pre>
+<p>This scans the <code>apps/</code> directory and registers any new app versions in the database.</p>
+<p>You'll see warnings about code signing:</p>
+<pre><code>Warning: no code signing key found
+</code></pre>
+<p>Ignore these warnings and type <code>Y</code> when prompted. Code signing is important for production (prevents malicious code), but we can skip it for testing.</p>
+<h3>Step 12.4: Restart the Project</h3>
+<p>The daemons need to pick up the new configuration:</p>
+<pre><code class="language-bash">cd ~/projects/test
+bin/stop
+bin/start
+</code></pre>
+<p><strong>Your project now has a working application!</strong> Clients can download the uppercase app and run it.</p>
+<hr>
+<h2>Phase 13: Submit and Run a Job</h2>
+<h3>Creating Work</h3>
+<p>Now we'll create an actual work unit and watch it flow through the system.</p>
+<h3>Step 13.1: Create an Input File</h3>
+<pre><code class="language-bash">cd ~/projects/test
+echo &quot;Hello World! This is a TEST of my BOINC project. Let's see if it works correctly.&quot; &gt; infile
+</code></pre>
+<h3>Step 13.2: Submit the Job</h3>
+<pre><code class="language-bash">bin/submit_job uppercase infile
+</code></pre>
+<p>This creates a work unit using the &quot;uppercase&quot; app with &quot;infile&quot; as input.</p>
+<p>The command prints a job name like <code>uppercase_1_0</code>. <strong>Write this down</strong> — you'll need it to check the result.</p>
+<p><strong>What just happened?</strong></p>
+<ol>
+<li>The input file was copied to the project's download directory</li>
+<li>A database record was created for the work unit</li>
+<li>The scheduler can now send this job to any client that asks for work</li>
+</ol>
+<h3>Step 13.3: Tell the Client to Check for Work</h3>
+<p>Go to BOINC Manager:</p>
+<ol>
+<li>Click the &quot;Projects&quot; tab</li>
+<li>Select your project</li>
+<li>Click &quot;Update&quot;</li>
+</ol>
+<p>This tells the client to immediately contact the server rather than waiting for the next scheduled check.</p>
+<h3>Step 13.4: Watch the Job Run</h3>
+<p>Go to the &quot;Tasks&quot; tab in BOINC Manager. You should see a task appear and start running!</p>
+<p>Watch the Event Log (Tools → Event Log) to see the detailed communication:</p>
+<ul>
+<li>Client downloads the app version</li>
+<li>Client downloads the input file</li>
+<li>Task starts running</li>
+<li>Task completes</li>
+<li>Client uploads the result</li>
+</ul>
+<p>The uppercase app runs for about 20 seconds.</p>
+<h3>Step 13.5: Check the Result</h3>
+<p>Once the task shows &quot;Ready to report&quot; in BOINC Manager, click &quot;Update&quot; again to upload the result.</p>
+<p>Then check the result from the command line:</p>
+<pre><code class="language-bash">cd ~/projects/test
+bin/query_job uppercase_1_0
+</code></pre>
+<p>Replace <code>uppercase_1_0</code> with the actual job name from step 13.2.</p>
+<p>The output will show:</p>
+<ul>
+<li>Job status: &quot;done&quot;</li>
+<li>The output file contents (your text in UPPERCASE)</li>
+</ul>
+<p><strong>Congratulations!</strong> You've completed the full BOINC workflow:</p>
+<ol>
+<li>Created an application</li>
+<li>Submitted a job</li>
+<li>A client downloaded and ran it</li>
+<li>The result was validated and processed</li>
+</ol>
+<hr>
+<h2>Phase 14: Understanding Log Files</h2>
+<h3>Where to Look When Things Go Wrong</h3>
+<p>BOINC projects generate extensive logs. Knowing where to look is essential for debugging.</p>
+<h3>Project Daemon Logs</h3>
+<p>Location: <code>~/projects/test/log_BOINC/</code></p>
+<table>
+<thead>
+<tr>
+<th>Log File</th>
+<th>What It Contains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feeder.log</code></td>
+<td>Shared memory feeder (prepares work for scheduler)</td>
+</tr>
+<tr>
+<td><code>transitioner.log</code></td>
+<td>State machine for work units (new → in progress → done)</td>
+</tr>
+<tr>
+<td><code>scheduler.log</code></td>
+<td>Job dispatcher (handles client requests)</td>
+</tr>
+<tr>
+<td><code>file_upload_handler.log</code></td>
+<td>Receives uploaded result files</td>
+</tr>
+<tr>
+<td><code>sample_trivial_validator.log</code></td>
+<td>Result validation</td>
+</tr>
+<tr>
+<td><code>sample_assimilator.log</code></td>
+<td>Result processing</td>
+</tr>
+<tr>
+<td><code>file_deleter.log</code></td>
+<td>Cleans up old files</td>
+</tr>
+</tbody>
+</table>
+<p>To view a log:</p>
+<pre><code class="language-bash">tail -f ~/projects/test/log_BOINC/scheduler.log
+</code></pre>
+<p>Look for lines containing &quot;Error&quot; or &quot;Warning&quot;.</p>
+<h3>Apache/PHP Logs</h3>
+<p>Location: <code>/var/log/apache2/</code></p>
+<pre><code class="language-bash">sudo tail -f /var/log/apache2/error.log
+</code></pre>
+<p>This shows errors from the web interface (PHP errors, scheduler crashes, etc.).</p>
+<h3>Client Logs</h3>
+<p>If you're debugging client-side issues, look at the Event Log in BOINC Manager, or:</p>
+<pre><code class="language-bash">cat ~/BOINC/boinc.log
+</code></pre>
+<hr>
+<h2>Phase 15: Project Control Commands</h2>
+<h3>Managing Your Project</h3>
+<p>These commands control your BOINC project:</p>
+<pre><code class="language-bash">cd ~/projects/test
+
+# Start all daemons
+bin/start
+
+# Stop all daemons  
+bin/stop
+
+# Check status of all daemons
+bin/status
+</code></pre>
+<h3>When Stopped vs. Running</h3>
+<table>
+<thead>
+<tr>
+<th>Project State</th>
+<th>Website</th>
+<th>Scheduler</th>
+<th>Work Distribution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stopped</strong></td>
+<td>Works</td>
+<td>Doesn't respond</td>
+<td>No jobs sent or received</td>
+</tr>
+<tr>
+<td><strong>Running</strong></td>
+<td>Works</td>
+<td>Active</td>
+<td>Jobs distributed and collected</td>
+</tr>
+</tbody>
+</table>
+<p>You might stop the project to do maintenance, upgrade software, or fix problems.</p>
+<h3>Deleting a Project (If Needed)</h3>
+<p>If you want to start over completely:</p>
+<pre><code class="language-bash"># Drop the database
+mysql -u boincadm -p
+DROP DATABASE test;
+exit
+
+# Remove project files
+cd ~/projects
+rm -rf test
+
+# Remove Apache config
+sudo rm /etc/apache2/sites-enabled/test.httpd.conf
+sudo apache2ctl restart
+
+# Remove cron job
+crontab -e
+# Delete the line for this project
+</code></pre>
+<hr>
+<h2>Quick Reference</h2>
+<h3>Key Paths</h3>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BOINC source code</td>
+<td><code>~/boinc/</code></td>
+</tr>
+<tr>
+<td>Your project</td>
+<td><code>~/projects/test/</code></td>
+</tr>
+<tr>
+<td>Project config</td>
+<td><code>~/projects/test/config.xml</code></td>
+</tr>
+<tr>
+<td>App templates</td>
+<td><code>~/projects/test/templates/</code></td>
+</tr>
+<tr>
+<td>App versions</td>
+<td><code>~/projects/test/apps/</code></td>
+</tr>
+<tr>
+<td>Log files</td>
+<td><code>~/projects/test/log_BOINC/</code></td>
+</tr>
+<tr>
+<td>Public web files</td>
+<td><code>~/projects/test/html/user/</code></td>
+</tr>
+<tr>
+<td>Admin web files</td>
+<td><code>~/projects/test/html/ops/</code></td>
+</tr>
+<tr>
+<td>Project settings</td>
+<td><code>~/projects/test/html/project/project.inc</code></td>
+</tr>
+<tr>
+<td>Results (sample assimilator)</td>
+<td><code>~/projects/test/sample_results/</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Key URLs</h3>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Public website</td>
+<td><code>http://YOUR_IP/test/</code></td>
+</tr>
+<tr>
+<td>Admin interface</td>
+<td><code>http://YOUR_IP/test_ops/</code></td>
+</tr>
+<tr>
+<td>Scheduler</td>
+<td><code>http://YOUR_IP/test_cgi/cgi</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Key Commands</h3>
+<pre><code class="language-bash"># Project control
+cd ~/projects/test
+bin/start          # Start project
+bin/stop           # Stop project
+bin/status         # Check daemon status
+
+# Job management
+bin/submit_job uppercase inputfile   # Submit a job
+bin/query_job jobname                # Check job status
+
+# App management
+bin/update_versions   # Register new app versions
+
+# Database
+bin/xadd              # Initialize database
+</code></pre>
+<hr>
+<h2>What's Next: From Tutorial to Real Project</h2>
+<p>This tutorial gives you a working skeleton. Here's what you'd need to do for a real deployment:</p>
+<h3>1. Replace the Toy App with Real Science</h3>
+<p>Instead of &quot;uppercase&quot;, compile your actual analysis code against the BOINC libraries. Your app needs to:</p>
+<ul>
+<li>Use the BOINC API for checkpointing (save state so jobs can resume if interrupted)</li>
+<li>Report progress to the client</li>
+<li>Handle input/output files correctly</li>
+</ul>
+<p>See: https://github.com/BOINC/boinc/wiki/AppIntro</p>
+<h3>2. Create Multi-Platform App Versions</h3>
+<p>The tutorial only makes a Linux version. Most volunteers run Windows or Mac. You'd need to:</p>
+<ul>
+<li>Cross-compile or build natively on each platform</li>
+<li>Create app version directories for <code>windows_x86_64</code>, <code>x86_64-apple-darwin</code>, etc.</li>
+<li>Test on each platform</li>
+</ul>
+<h3>3. Build Work Generators</h3>
+<p>The tutorial manually submits one job. Real projects continuously generate thousands of jobs. You'd write a work generator daemon that:</p>
+<ul>
+<li>Pulls from a queue of unprocessed data</li>
+<li>Creates work units automatically</li>
+<li>Manages how much work is available</li>
+</ul>
+<p>See: https://github.com/BOINC/boinc/wiki/JobSubmission</p>
+<h3>4. Write Real Validators and Assimilators</h3>
+<p>The tutorial uses trivial versions. Real projects need:</p>
+<ul>
+<li><strong>Validator</strong>: Compare results from multiple volunteers, detect errors and cheating</li>
+<li><strong>Assimilator</strong>: Process results meaningfully (store in database, feed to analysis, etc.)</li>
+</ul>
+<p>See: https://github.com/BOINC/boinc/wiki/BackendPrograms</p>
+<h3>5. Production Infrastructure</h3>
+<p>For public deployment, you need:</p>
+<ul>
+<li>A server visible on the internet (not just your LAN)</li>
+<li>A domain name</li>
+<li>SSL certificate (HTTPS)</li>
+<li>Proper backups</li>
+<li>Monitoring and alerting</li>
+</ul>
+<h3>6. Recruit Volunteers</h3>
+<p>Either publicize your project directly, or register with Science United so volunteers can discover you.</p>
+<hr>
+<h2>Relevance to Transportation Planning</h2>
+<p>You mentioned interest in distributed computing for urban science research. Here's how BOINC could apply:</p>
+<h3>Potential Use Cases</h3>
+<ul>
+<li><strong>Scenario Analysis</strong>: Run thousands of what-if scenarios for regional plans</li>
+<li><strong>Sensitivity Testing</strong>: Explore parameter spaces in travel demand models</li>
+<li><strong>Microsimulation</strong>: Distribute traffic microsimulation across many time periods or seed variations</li>
+<li><strong>Calibration</strong>: Run many calibration iterations in parallel</li>
+</ul>
+<h3>Challenges</h3>
+<ol>
+<li>
+<p><strong>Proprietary Tools</strong>: Many transportation models use commercial software (TransCAD, CUBE, VISUM) that can't be distributed to volunteers. You'd need open-source alternatives or custom code.</p>
+</li>
+<li>
+<p><strong>Data Sensitivity</strong>: Transportation data often includes sensitive information. You'd need to anonymize carefully.</p>
+</li>
+<li>
+<p><strong>Volunteer Interest</strong>: BOINC projects thrive when people feel connected to the mission. &quot;Help understand urban mobility&quot; could work, especially with local volunteers.</p>
+</li>
+<li>
+<p><strong>Job Granularity</strong>: BOINC works best when jobs take minutes to hours, not days. You'd need to decompose your analysis appropriately.</p>
+</li>
+</ol>
+<h3>A Hybrid Approach</h3>
+<p>Rather than pure volunteer computing, you might consider:</p>
+<ul>
+<li>Use BOINC infrastructure but limit it to known machines (a research cluster, university lab computers, colleagues' idle workstations)</li>
+<li>This gives you the distributed computing benefits without needing to package everything for unknown volunteers</li>
+</ul>
+<hr>
+<h2>Getting Help</h2>
+<p>If you run into problems:</p>
+<ol>
+<li>
+<p><strong>BOINC Projects Email List</strong>: boinc_projects@ssl.berkeley.edu
+Subscribe at: https://groups.google.com/a/ssl.berkeley.edu/g/boinc_projects</p>
+</li>
+<li>
+<p><strong>GitHub Issues</strong>: https://github.com/BOINC/boinc/issues</p>
+</li>
+<li>
+<p><strong>BOINC Wiki</strong>: https://github.com/BOINC/boinc/wiki
+Extensive documentation on all aspects of BOINC</p>
+</li>
+</ol>
+<hr>
+<p><em>Guide created based on the official BOINC cookbook at https://github.com/BOINC/boinc/wiki/Create-a-BOINC-server-(cookbook)</em></p>
+
+  </div>
+</article>
+
+    </div>
+
+    <div id="sidebar">
+      <div class="sidetitle">Navigation</div>
+      <div class="side">
+        <a href="/">Home</a><br />
+        <a href="/blog-list/">Blog</a><br />
+        <a href="/projects-list/">Projects</a><br />
+        <a href="/skills-list/">Skills</a><br />
+        <a href="/about/">About</a>
+      </div>
+
+      <div class="sidetitle">Archives</div>
+      <div class="side archives"><details class="archive-year-group" open>
+              <summary class="archive-year"><span class="summary-caret">▸</span> 2026</summary><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> May</summary><div class="archive-entry">
+            <a href="/posts/trader-app/" class="archive-link">Trader App</a>
+            <div class="archive-date">May 23</div>
+          </div></details><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> April</summary><div class="archive-entry">
+            <a href="/posts/blog-helper/" class="archive-link">blog helper</a>
+            <div class="archive-date">Apr  7</div>
+          </div><div class="archive-entry">
+            <a href="/posts/added-project-blogs-and-post-types/" class="archive-link">Added project-specific blogs and post types</a>
+            <div class="archive-date">Apr  7</div>
+          </div></details><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> January</summary><div class="archive-entry">
+            <a href="/posts/boinc_server_setup/" class="archive-link">BOINC Server Setup Guide - Hello World for urban@home</a>
+            <div class="archive-date">Jan 15</div>
+          </div></details></details></div>
+
+      <div class="sidetitle">Meta</div>
+      <div class="side">
+        <p>Building in public &copy; 2026</p>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span id="theme-label">theme: system</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle functionality
+    (function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeLabel = document.getElementById('theme-label');
+      const html = document.documentElement;
+
+      // Theme cycle: system -> light -> dark -> system
+      const themes = ['system', 'light', 'dark'];
+
+      // Get stored theme or default to system
+      let currentTheme = localStorage.getItem('theme') || 'system';
+
+      function applyTheme(theme) {
+        if (theme === 'system') {
+          html.removeAttribute('data-theme');
+          // Apply system preference
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.setAttribute('data-theme', 'dark');
+          }
+        } else {
+          html.setAttribute('data-theme', theme);
+        }
+        themeLabel.textContent = 'theme: ' + theme;
+        localStorage.setItem('theme', theme);
+      }
+
+      // Apply initial theme
+      applyTheme(currentTheme);
+
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (currentTheme === 'system') {
+            applyTheme('system');
+          }
+        });
+      }
+
+      // Toggle button click handler
+      themeToggle.addEventListener('click', () => {
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        currentTheme = themes[nextIndex];
+        applyTheme(currentTheme);
+      });
+    })();
+  </script>
+</body>
+</html>

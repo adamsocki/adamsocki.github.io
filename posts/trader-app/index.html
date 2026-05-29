@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trader App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="banner">
+    <h1><a href="/">building in public</a></h1>
+    <p class="description">ongoing projects and updates</p>
+  </div>
+
+  <div id="container">
+    <div id="content">
+      
+<div class="back-link">
+  <a href="/blog-list/">&larr; Back to Blog</a>&nbsp;&middot;&nbsp; <a href="/_projects/trader/">Trader</a></div>
+
+<article class="blog-post">
+  <header class="blog-post-header">
+    <h1>Trader App</h1>
+    <div class="blog-post-meta"><time datetime="Sat May 23 2026 00:00:00 GMT+0000 (Coordinated Universal Time)">May 23, 2026</time><span class="post-type-badge post-type-devlog">devlog</span><span class="post-project-badge">trader</span></div></header><div class="blog-post-content">
+    <h2>What I worked on</h2>
+<p>Getting a backend trading reviewer up and running.</p>
+<h2>What I learned</h2>
+<p>Not as easy to just do a simple strategy and make money lol. I'm honestly not really interested (or even think that this trading shit could actually work or is real.) but it's something i like to think about functioning. an algo that buys and sells stocks in the background. something forgettable and more of an art experiment. Here's my robot that exists and feeds into the market.</p>
+<h2>Next up</h2>
+<p>One thing that i have found to be a bit difficult is that i have to do each scenario one by one. i'm thinkning instead to maybe find some genetic algorithms up and running to sort through some trading strategies or to find different strategies. This would be an interesting tool because it would need to also make sure that it doesn't 'overfit' to one specific stock or timeframe. could be fun...ish.</p>
+
+  </div>
+</article>
+
+    </div>
+
+    <div id="sidebar">
+      <div class="sidetitle">Navigation</div>
+      <div class="side">
+        <a href="/">Home</a><br />
+        <a href="/blog-list/">Blog</a><br />
+        <a href="/projects-list/">Projects</a><br />
+        <a href="/skills-list/">Skills</a><br />
+        <a href="/about/">About</a>
+      </div>
+
+      <div class="sidetitle">Archives</div>
+      <div class="side archives"><details class="archive-year-group" open>
+              <summary class="archive-year"><span class="summary-caret">▸</span> 2026</summary><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> May</summary><div class="archive-entry">
+            <a href="/posts/trader-app/" class="archive-link">Trader App</a>
+            <div class="archive-date">May 23</div>
+          </div></details><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> April</summary><div class="archive-entry">
+            <a href="/posts/blog-helper/" class="archive-link">blog helper</a>
+            <div class="archive-date">Apr  7</div>
+          </div><div class="archive-entry">
+            <a href="/posts/added-project-blogs-and-post-types/" class="archive-link">Added project-specific blogs and post types</a>
+            <div class="archive-date">Apr  7</div>
+          </div></details><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> January</summary><div class="archive-entry">
+            <a href="/posts/boinc_server_setup/" class="archive-link">BOINC Server Setup Guide - Hello World for urban@home</a>
+            <div class="archive-date">Jan 15</div>
+          </div></details></details></div>
+
+      <div class="sidetitle">Meta</div>
+      <div class="side">
+        <p>Building in public &copy; 2026</p>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span id="theme-label">theme: system</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle functionality
+    (function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeLabel = document.getElementById('theme-label');
+      const html = document.documentElement;
+
+      // Theme cycle: system -> light -> dark -> system
+      const themes = ['system', 'light', 'dark'];
+
+      // Get stored theme or default to system
+      let currentTheme = localStorage.getItem('theme') || 'system';
+
+      function applyTheme(theme) {
+        if (theme === 'system') {
+          html.removeAttribute('data-theme');
+          // Apply system preference
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.setAttribute('data-theme', 'dark');
+          }
+        } else {
+          html.setAttribute('data-theme', theme);
+        }
+        themeLabel.textContent = 'theme: ' + theme;
+        localStorage.setItem('theme', theme);
+      }
+
+      // Apply initial theme
+      applyTheme(currentTheme);
+
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (currentTheme === 'system') {
+            applyTheme('system');
+          }
+        });
+      }
+
+      // Toggle button click handler
+      themeToggle.addEventListener('click', () => {
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        currentTheme = themes[nextIndex];
+        applyTheme(currentTheme);
+      });
+    })();
+  </script>
+</body>
+</html>

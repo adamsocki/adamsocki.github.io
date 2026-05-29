@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="banner">
+    <h1><a href="/">building in public</a></h1>
+    <p class="description">ongoing projects and updates</p>
+  </div>
+
+  <div id="container">
+    <div id="content">
+      
+<div class="blog-filters">
+    <button class="filter-btn active" data-filter="all">all</button>
+    <button class="filter-btn" data-filter="article">articles</button>
+    <button class="filter-btn" data-filter="devlog">devlogs</button>
+    <button class="filter-btn" data-filter="til">til</button>
+    <button class="filter-btn" data-filter="update">updates</button>
+    <span class="filter-sep">|</span>
+    <button class="filter-btn" data-project="all">all projects</button><button class="filter-btn" data-project="this-blog">this-blog</button><button class="filter-btn" data-project="trader">trader</button><button class="filter-btn" data-project="urban-at-home">urban-at-home</button></div><div
+    class="blog-list-entry"
+    data-type="devlog"
+    data-project="trader"
+>
+    <div class="date-header">May 23, 2026</div>
+
+    <div class="post">
+        <h3><span class="post-type-badge post-type-devlog"
+                >devlog</span
+            ><a href="/posts/trader-app/">Trader App</a>
+        </h3><span class="post-project-badge">trader</span><div class="post-meta">
+            Posted at 12:00 AM
+        </div>
+    </div>
+</div><div
+    class="blog-list-entry"
+    data-type="article"
+    data-project="this-blog"
+>
+    <div class="date-header">April 07, 2026</div>
+
+    <div class="post">
+        <h3><a href="/posts/blog-helper/">blog helper</a>
+        </h3><span class="post-project-badge">this-blog</span><p>making a way to more seamlessly add projects and posts to my blog</p><div class="post-meta">
+            Posted at 12:00 AM
+        </div>
+    </div>
+</div><div
+    class="blog-list-entry"
+    data-type="devlog"
+    data-project="this-blog"
+>
+    <div class="date-header">April 07, 2026</div>
+
+    <div class="post">
+        <h3><span class="post-type-badge post-type-devlog"
+                >devlog</span
+            ><a href="/posts/added-project-blogs-and-post-types/">Added project-specific blogs and post types</a>
+        </h3><span class="post-project-badge">this-blog</span><p>New features: project-filtered blog feeds, short-form post types (devlog, TIL, update), and a zero-friction post creator.</p><div class="post-meta">
+            Posted at 12:00 AM
+        </div>
+    </div>
+</div><div
+    class="blog-list-entry"
+    data-type="article"
+    data-project="urban-at-home"
+>
+    <div class="date-header">January 15, 2026</div>
+
+    <div class="post">
+        <h3><a href="/posts/boinc_server_setup/">BOINC Server Setup Guide - Hello World for urban@home</a>
+        </h3><span class="post-project-badge">urban-at-home</span><p>BOINC server setup guide for urban@home project with how to get started with a boilerplate project server. This guide covers installation, configuration, and deployment steps for setting up a BOINC server.</p><div class="post-meta">
+            Posted at 12:00 AM
+        </div>
+    </div>
+</div><script>
+    (function () {
+        let activeType = "all";
+        let activeProject = "all";
+
+        function updateActiveButton(
+            selector,
+            activeValue,
+            activeAttribute,
+            clickedButton
+        ) {
+            document
+                .querySelectorAll(selector)
+                .forEach((button) => button.classList.remove("active"));
+
+            const activeButton =
+                activeValue === "all"
+                    ? document.querySelector(
+                          `${selector}[${activeAttribute}="all"]`
+                      )
+                    : clickedButton;
+
+            if (activeButton) {
+                activeButton.classList.add("active");
+            }
+        }
+
+        function applyFilters() {
+            document.querySelectorAll(".blog-list-entry").forEach((entry) => {
+                const type = entry.dataset.type || "article";
+                const project = entry.dataset.project || "";
+                const matchType = activeType === "all" || type === activeType;
+                const matchProj =
+                    activeProject === "all" || project === activeProject;
+                entry.style.display = matchType && matchProj ? "" : "none";
+            });
+        }
+
+        document.querySelectorAll(".filter-btn[data-filter]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const selectedType = btn.dataset.filter;
+                activeType =
+                    activeType === selectedType && selectedType !== "all"
+                        ? "all"
+                        : selectedType;
+                updateActiveButton(
+                    ".filter-btn[data-filter]",
+                    activeType,
+                    "data-filter",
+                    btn
+                );
+                applyFilters();
+            });
+        });
+
+        document
+            .querySelectorAll(".filter-btn[data-project]")
+            .forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const selectedProject = btn.dataset.project;
+                    activeProject =
+                        activeProject === selectedProject &&
+                        selectedProject !== "all"
+                            ? "all"
+                            : selectedProject;
+                    updateActiveButton(
+                        ".filter-btn[data-project]",
+                        activeProject,
+                        "data-project",
+                        btn
+                    );
+                    applyFilters();
+                });
+            });
+    })();
+</script>
+
+    </div>
+
+    <div id="sidebar">
+      <div class="sidetitle">Navigation</div>
+      <div class="side">
+        <a href="/">Home</a><br />
+        <a href="/blog-list/">Blog</a><br />
+        <a href="/projects-list/">Projects</a><br />
+        <a href="/skills-list/">Skills</a><br />
+        <a href="/about/">About</a>
+      </div>
+
+      <div class="sidetitle">Archives</div>
+      <div class="side archives"><details class="archive-year-group" open>
+              <summary class="archive-year"><span class="summary-caret">▸</span> 2026</summary><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> May</summary><div class="archive-entry">
+            <a href="/posts/trader-app/" class="archive-link">Trader App</a>
+            <div class="archive-date">May 23</div>
+          </div></details><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> April</summary><div class="archive-entry">
+            <a href="/posts/blog-helper/" class="archive-link">blog helper</a>
+            <div class="archive-date">Apr  7</div>
+          </div><div class="archive-entry">
+            <a href="/posts/added-project-blogs-and-post-types/" class="archive-link">Added project-specific blogs and post types</a>
+            <div class="archive-date">Apr  7</div>
+          </div></details><details class="archive-month-group" open>
+              <summary class="archive-month"><span class="summary-caret">▸</span> January</summary><div class="archive-entry">
+            <a href="/posts/boinc_server_setup/" class="archive-link">BOINC Server Setup Guide - Hello World for urban@home</a>
+            <div class="archive-date">Jan 15</div>
+          </div></details></details></div>
+
+      <div class="sidetitle">Meta</div>
+      <div class="side">
+        <p>Building in public &copy; 2026</p>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span id="theme-label">theme: system</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle functionality
+    (function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeLabel = document.getElementById('theme-label');
+      const html = document.documentElement;
+
+      // Theme cycle: system -> light -> dark -> system
+      const themes = ['system', 'light', 'dark'];
+
+      // Get stored theme or default to system
+      let currentTheme = localStorage.getItem('theme') || 'system';
+
+      function applyTheme(theme) {
+        if (theme === 'system') {
+          html.removeAttribute('data-theme');
+          // Apply system preference
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.setAttribute('data-theme', 'dark');
+          }
+        } else {
+          html.setAttribute('data-theme', theme);
+        }
+        themeLabel.textContent = 'theme: ' + theme;
+        localStorage.setItem('theme', theme);
+      }
+
+      // Apply initial theme
+      applyTheme(currentTheme);
+
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (currentTheme === 'system') {
+            applyTheme('system');
+          }
+        });
+      }
+
+      // Toggle button click handler
+      themeToggle.addEventListener('click', () => {
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        currentTheme = themes[nextIndex];
+        applyTheme(currentTheme);
+      });
+    })();
+  </script>
+</body>
+</html>
