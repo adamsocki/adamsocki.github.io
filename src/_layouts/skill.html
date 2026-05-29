@@ -13,6 +13,13 @@ layout: base.html
     {%- elsif icon -%}
       <img src="https://cdn.simpleicons.org/{{ icon }}/{{ iconColor }}" alt="{{ title }}" class="skill-icon" width="28" height="28" />
     {%- endif -%}
+    {%- for extraIcon in extraIcons -%}
+      {%- if extraIcon.iconPath -%}
+        <img src="{{ extraIcon.iconPath | url }}" alt="{{ extraIcon.label | default: title }}" class="skill-icon" width="28" height="28" />
+      {%- elsif extraIcon.icon -%}
+        <img src="https://cdn.simpleicons.org/{{ extraIcon.icon }}/{{ extraIcon.iconColor }}" alt="{{ extraIcon.label | default: title }}" class="skill-icon" width="28" height="28" />
+      {%- endif -%}
+    {%- endfor -%}
     <h2>{{ title }}</h2>
   </header>
 

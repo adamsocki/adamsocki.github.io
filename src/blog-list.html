@@ -53,6 +53,28 @@ permalink: /blog-list/index.html
         let activeType = "all";
         let activeProject = "all";
 
+        function updateActiveButton(
+            selector,
+            activeValue,
+            activeAttribute,
+            clickedButton
+        ) {
+            document
+                .querySelectorAll(selector)
+                .forEach((button) => button.classList.remove("active"));
+
+            const activeButton =
+                activeValue === "all"
+                    ? document.querySelector(
+                          `${selector}[${activeAttribute}="all"]`
+                      )
+                    : clickedButton;
+
+            if (activeButton) {
+                activeButton.classList.add("active");
+            }
+        }
+
         function applyFilters() {
             document.querySelectorAll(".blog-list-entry").forEach((entry) => {
                 const type = entry.dataset.type || "article";
@@ -66,11 +88,17 @@ permalink: /blog-list/index.html
 
         document.querySelectorAll(".filter-btn[data-filter]").forEach((btn) => {
             btn.addEventListener("click", () => {
-                document
-                    .querySelectorAll(".filter-btn[data-filter]")
-                    .forEach((b) => b.classList.remove("active"));
-                btn.classList.add("active");
-                activeType = btn.dataset.filter;
+                const selectedType = btn.dataset.filter;
+                activeType =
+                    activeType === selectedType && selectedType !== "all"
+                        ? "all"
+                        : selectedType;
+                updateActiveButton(
+                    ".filter-btn[data-filter]",
+                    activeType,
+                    "data-filter",
+                    btn
+                );
                 applyFilters();
             });
         });
@@ -79,11 +107,18 @@ permalink: /blog-list/index.html
             .querySelectorAll(".filter-btn[data-project]")
             .forEach((btn) => {
                 btn.addEventListener("click", () => {
-                    document
-                        .querySelectorAll(".filter-btn[data-project]")
-                        .forEach((b) => b.classList.remove("active"));
-                    btn.classList.add("active");
-                    activeProject = btn.dataset.project;
+                    const selectedProject = btn.dataset.project;
+                    activeProject =
+                        activeProject === selectedProject &&
+                        selectedProject !== "all"
+                            ? "all"
+                            : selectedProject;
+                    updateActiveButton(
+                        ".filter-btn[data-project]",
+                        activeProject,
+                        "data-project",
+                        btn
+                    );
                     applyFilters();
                 });
             });

@@ -41,6 +41,20 @@ permalink: /projects-list/index.html
   var searchInput = document.getElementById("project-search");
   var noResults = document.getElementById("no-results");
 
+  function updateActiveButton(selector, activeValue, activeAttribute, clickedButton) {
+    document.querySelectorAll(selector).forEach(function(button) {
+      button.classList.remove("active");
+    });
+
+    var activeButton = activeValue === "all"
+      ? document.querySelector(selector + "[" + activeAttribute + "='all']")
+      : clickedButton;
+
+    if (activeButton) {
+      activeButton.classList.add("active");
+    }
+  }
+
   function applyFilters() {
     var visible = 0;
     cards.forEach(function(card) {
@@ -61,18 +75,18 @@ permalink: /projects-list/index.html
 
   document.querySelectorAll(".filter-btn[data-status]").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      document.querySelectorAll(".filter-btn[data-status]").forEach(function(b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      activeStatus = btn.dataset.status;
+      var selectedStatus = btn.dataset.status;
+      activeStatus = activeStatus === selectedStatus && selectedStatus !== "all" ? "all" : selectedStatus;
+      updateActiveButton(".filter-btn[data-status]", activeStatus, "data-status", btn);
       applyFilters();
     });
   });
 
   document.querySelectorAll(".filter-btn[data-tag]").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      document.querySelectorAll(".filter-btn[data-tag]").forEach(function(b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      activeTag = btn.dataset.tag;
+      var selectedTag = btn.dataset.tag;
+      activeTag = activeTag === selectedTag && selectedTag !== "all" ? "all" : selectedTag;
+      updateActiveButton(".filter-btn[data-tag]", activeTag, "data-tag", btn);
       applyFilters();
     });
   });

@@ -1,18 +1,22 @@
 ---
 title: "GIS"
 category: "Geospatial"
-proficiency: "Advanced"
+proficiency: "Expert"
 firstUsed: "2013-09-01"
 skillSlug: "gis"
 icon: "qgis"
 iconColor: "589632"
+extraIcons:
+  - icon: "arcgis"
+    iconColor: "2C7AC3"
+    label: "ArcGIS"
 tags:
   - "GIS"
   - "Geospatial"
   - "Urban Science"
 ---
 
-Geographic information systems for working with spatial data, maps, and urban models.
+Geographic Information Systems (GID)for working with spatial data, maps, and urban models.
 
 ## Projects
 
@@ -21,5 +25,4 @@ Using GIS as part of the **urban@home** project to prepare, inspect, and reason 
 ## Notes
 
 - Useful bridge between raw datasets and model-ready urban science inputs
-- QGIS is the starting point for hands-on map inspection and data cleanup
-- Spatial joins, projections, and raster/vector workflows are the concepts to get solid first
+- QGIS is a great tool for those who don't have access to ArcGIS. is the starting point for hands-on map inspection and data cleanup

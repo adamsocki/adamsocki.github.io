@@ -37,6 +37,13 @@ permalink: /skills-list/index.html
         {%- elsif skill.data.icon -%}
           <img src="https://cdn.simpleicons.org/{{ skill.data.icon }}/{{ skill.data.iconColor }}" alt="{{ skill.data.title }}" class="skill-icon" width="20" height="20" loading="lazy" />
         {%- endif -%}
+        {%- for extraIcon in skill.data.extraIcons -%}
+          {%- if extraIcon.iconPath -%}
+            <img src="{{ extraIcon.iconPath | url }}" alt="{{ extraIcon.label | default: skill.data.title }}" class="skill-icon" width="20" height="20" loading="lazy" />
+          {%- elsif extraIcon.icon -%}
+            <img src="https://cdn.simpleicons.org/{{ extraIcon.icon }}/{{ extraIcon.iconColor }}" alt="{{ extraIcon.label | default: skill.data.title }}" class="skill-icon" width="20" height="20" loading="lazy" />
+          {%- endif -%}
+        {%- endfor -%}
         <h3 class="skill-card-title"><a href="{{ skill.url }}">{{ skill.data.title }}</a></h3>
         {%- if skill.data.proficiency -%}
           <span class="proficiency-badge proficiency-{{ skill.data.proficiency | downcase }}">{{ skill.data.proficiency }}</span>
@@ -79,6 +86,20 @@ permalink: /skills-list/index.html
   var searchInput = document.getElementById("skill-search");
   var noResults = document.getElementById("no-skill-results");
 
+  function updateActiveButton(selector, activeValue, activeAttribute, clickedButton) {
+    document.querySelectorAll(selector).forEach(function(button) {
+      button.classList.remove("active");
+    });
+
+    var activeButton = activeValue === "all"
+      ? document.querySelector(selector + "[" + activeAttribute + "='all']")
+      : clickedButton;
+
+    if (activeButton) {
+      activeButton.classList.add("active");
+    }
+  }
+
   function applyFilters() {
     var visible = 0;
     cards.forEach(function(card) {
@@ -99,18 +120,18 @@ permalink: /skills-list/index.html
 
   document.querySelectorAll(".filter-btn[data-proficiency]").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      document.querySelectorAll(".filter-btn[data-proficiency]").forEach(function(b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      activeProficiency = btn.dataset.proficiency;
+      var selectedProficiency = btn.dataset.proficiency;
+      activeProficiency = activeProficiency === selectedProficiency && selectedProficiency !== "all" ? "all" : selectedProficiency;
+      updateActiveButton(".filter-btn[data-proficiency]", activeProficiency, "data-proficiency", btn);
       applyFilters();
     });
   });
 
   document.querySelectorAll(".filter-btn[data-category]").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      document.querySelectorAll(".filter-btn[data-category]").forEach(function(b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      activeCategory = btn.dataset.category;
+      var selectedCategory = btn.dataset.category;
+      activeCategory = activeCategory === selectedCategory && selectedCategory !== "all" ? "all" : selectedCategory;
+      updateActiveButton(".filter-btn[data-category]", activeCategory, "data-category", btn);
       applyFilters();
     });
   });
