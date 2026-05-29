@@ -1400,30 +1400,30 @@ a.tag:hover {
   border-left: 3px solid var(--border-main);
 }
 
-/* Experience Timeline */
-.experience-timeline {
+/* Employment Timeline */
+.employment-timeline {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.experience-card {
+.employment-card {
   background: var(--bg-content);
   border: 1px solid var(--border-light);
   padding: 12px 15px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.experience-card:hover {
+.employment-card:hover {
   border-color: var(--border-main);
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-[data-theme="dark"] .experience-card:hover {
+[data-theme="dark"] .employment-card:hover {
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
-.experience-card-header {
+.employment-card-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -1431,43 +1431,43 @@ a.tag:hover {
   margin-bottom: 6px;
 }
 
-.experience-card-title-group {
+.employment-card-title-group {
   display: flex;
   align-items: baseline;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.experience-card-title {
+.employment-card-title {
   font-size: 15px;
   font-weight: bold;
   color: var(--text-heading);
   margin: 0;
 }
 
-.experience-card-title a {
+.employment-card-title a {
   color: var(--text-heading);
   text-decoration: none;
 }
 
-.experience-card-title a:hover {
+.employment-card-title a:hover {
   color: var(--link-hover);
   text-decoration: underline;
 }
 
-.experience-card-company {
+.employment-card-company {
   font-size: 12px;
   color: var(--text-secondary);
 }
 
-.experience-card-dates {
+.employment-card-dates {
   font-size: 11px;
   color: var(--text-muted);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.experience-card-meta {
+.employment-card-meta {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1475,21 +1475,21 @@ a.tag:hover {
   color: var(--text-muted);
 }
 
-.experience-location {
+.employment-location {
   font-size: 11px;
   color: var(--text-tertiary);
 }
 
-/* Experience Detail Page */
-.experience-detail {
+/* Employment Detail Page */
+.employment-detail {
   max-width: 100%;
 }
 
-.experience-detail-header {
+.employment-detail-header {
   margin-bottom: 6px;
 }
 
-.experience-detail-header h2 {
+.employment-detail-header h2 {
   font-size: 18px;
   font-weight: bold;
   color: var(--text-heading);
@@ -1499,13 +1499,13 @@ a.tag:hover {
   padding-bottom: 0;
 }
 
-.experience-company {
+.employment-company {
   font-size: 14px;
   color: var(--text-secondary);
   margin: 0;
 }
 
-.experience-detail-meta {
+.employment-detail-meta {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1516,56 +1516,75 @@ a.tag:hover {
   border-bottom: 1px solid var(--border-lighter);
 }
 
-.experience-meta-row {
+.employment-meta-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.experience-date-range {
+.employment-date-range {
   font-size: 12px;
   color: var(--text-secondary);
 }
 
-.experience-detail-content {
+.employment-detail-content {
   margin-top: 20px;
 }
 
-.experience-detail-content h1 {
+.employment-detail-content h1 {
   font-size: 18px;
   font-weight: bold;
   color: var(--text-heading);
   margin: 20px 0 10px 0;
 }
 
-.experience-detail-content h2 {
+.employment-detail-content h2 {
   font-size: 16px;
   font-weight: bold;
   color: var(--text-heading);
   margin: 18px 0 10px 0;
 }
 
-.experience-detail-content h3 {
+.employment-detail-content h3 {
   font-size: 14px;
   font-weight: bold;
   color: var(--text-heading);
   margin: 15px 0 8px 0;
 }
 
-.experience-detail-content p {
+.employment-detail-content p {
   margin-bottom: 12px;
   line-height: 1.6;
   color: var(--text-primary);
 }
 
-.experience-detail-content ul,
-.experience-detail-content ol {
+.employment-detail-content ul,
+.employment-detail-content ol {
   margin: 10px 0 12px 20px;
   line-height: 1.6;
 }
 
-.experience-detail-content li {
+.employment-detail-content li {
   margin-bottom: 5px;
+}
+
+/* Employment Related Projects */
+.employment-related {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-lighter);
+}
+
+.employment-related h3 {
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-heading);
+  margin-bottom: 10px;
+  padding: 5px 8px;
+  background: var(--bg-accent);
+  border-left: 3px solid var(--border-main);
 }
 
 /* About Skills Overview */

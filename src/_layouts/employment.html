@@ -1,0 +1,61 @@
+---
+layout: base.html
+---
+
+<div class="back-link">
+  <a href="{{ '/about/' | url }}">&larr; Back to About</a>
+</div>
+
+<article class="employment-detail">
+  <header class="employment-detail-header">
+    <h2>{{ title }}</h2>
+    {%- if company -%}
+      <p class="employment-company">{{ company }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="employment-detail-meta">
+    <div class="employment-meta-row">
+      {%- if start -%}
+        <span class="employment-date-range">
+          {{ start | date: "%b %Y" }}
+          {%- if end != "" and end -%}
+            &mdash; {{ end | date: "%b %Y" }}
+          {%- else -%}
+            &mdash; Present
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+      {%- if location -%}
+        <span class="employment-location">{{ location }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="project-tags">
+      {%- for tag in tags -%}
+        {%- if tag != "employment" -%}
+          <a href="{{ '/tags/' | url }}{{ tag | slug }}/" class="tag">{{ tag }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="employment-detail-content">
+    {{ content }}
+  </div>
+
+  {%- if projects and projects.size > 0 -%}
+  <div class="employment-related">
+    <h3>Projects</h3>
+    <div class="projects-grid">
+      {%- for projectSlug in projects -%}
+        {%- for project in collections.projects -%}
+          {%- if project.data.projectSlug == projectSlug -%}
+            {% include "project-card.html" project: project %}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- endif -%}
+</article>

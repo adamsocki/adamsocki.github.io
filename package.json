@@ -14,7 +14,10 @@
     "publish": "bash publish.sh",
     "codeAdjust": "bash code-adjust.sh",
     "postTool": "bash post-tool.sh",
-    "projectTool": "bash project-tool.sh"
+    "projectTool": "bash project-tool.sh",
+    "skill": "bash new-skill.sh",
+    "skillTool": "open tools/skill-tool.html",
+    "employment": "bash new-employment.sh"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1"

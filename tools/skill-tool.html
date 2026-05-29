@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Skill Tool</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f0f2ed;
+      --panel: #fbfcf7;
+      --ink: #20231c;
+      --muted: #69705e;
+      --line: #cbd2c1;
+      --accent: #4f6b3f;
+      --accent-ink: #ffffff;
+      --code: #e8ebdf;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121510;
+        --panel: #1c2118;
+        --ink: #eef3e8;
+        --muted: #adb8a2;
+        --line: #343d2d;
+        --accent: #a8cf8d;
+        --accent-ink: #182313;
+        --code: #283023;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(920px, calc(100vw - 32px));
+      margin: 36px auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      margin: 0 0 8px;
+    }
+
+    p {
+      color: var(--muted);
+      margin: 0;
+      max-width: 62ch;
+    }
+
+    .tool {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wide { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font: 700 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      padding: 9px 10px;
+    }
+
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+    }
+
+    button {
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--accent-ink);
+      cursor: pointer;
+      font: 700 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      padding: 10px 14px;
+      text-transform: lowercase;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .output {
+      display: none;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    code, pre {
+      background: var(--code);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    code { padding: 2px 4px; }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 680px) {
+      .grid { grid-template-columns: 1fr; }
+      main { margin: 20px auto; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Skill Tool</h1>
+      <p>Local-only drafting helper. Generate markdown, then put the file in <code>src/_skills/</code>.</p>
+    </header>
+
+    <section class="tool">
+      <div class="grid">
+        <div class="wide">
+          <label for="title">Skill / Technology</label>
+          <input id="title" placeholder="e.g. React, Rust, Docker" autofocus>
+        </div>
+
+        <div>
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="Language">Language</option>
+            <option value="Frontend Framework">Frontend Framework</option>
+            <option value="Backend Framework">Backend Framework</option>
+            <option value="Database">Database</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Tool">Tool</option>
+            <option value="Cloud">Cloud</option>
+            <option value="Testing">Testing</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="proficiency">Proficiency</label>
+          <select id="proficiency">
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate" selected>Intermediate</option>
+            <option value="Advanced">Advanced</option>
+            <option value="Expert">Expert</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="slug">Skill Slug</label>
+          <input id="slug" placeholder="auto from title">
+        </div>
+
+        <div>
+          <label for="firstUsed">First Used</label>
+          <input id="firstUsed" type="date">
+        </div>
+
+        <div class="wide">
+          <label for="tags">Tags</label>
+          <input id="tags" placeholder="comma-separated, e.g. JavaScript, Frontend, Web">
+        </div>
+
+        <div class="wide">
+          <label for="notes">Starter Body</label>
+          <textarea id="notes">## Notes
+
+## Code Snippets
+
+## Resources
+</textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="generate">generate file</button>
+        <button id="copy" class="secondary" hidden>copy markdown</button>
+        <button id="download" class="secondary" hidden>download .md</button>
+      </div>
+
+      <div class="output" id="outputWrap">
+        <label>Filename</label>
+        <code id="filename"></code>
+        <pre id="output"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const titleEl = document.getElementById('title');
+    const categoryEl = document.getElementById('category');
+    const proficiencyEl = document.getElementById('proficiency');
+    const slugEl = document.getElementById('slug');
+    const firstUsedEl = document.getElementById('firstUsed');
+    const tagsEl = document.getElementById('tags');
+    const notesEl = document.getElementById('notes');
+    const outputWrap = document.getElementById('outputWrap');
+    const outputEl = document.getElementById('output');
+    const filenameEl = document.getElementById('filename');
+    const copyBtn = document.getElementById('copy');
+    const downloadBtn = document.getElementById('download');
+
+    let currentMarkdown = '';
+    let currentFilename = '';
+
+    function slugify(value) {
+      return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    function escapeYaml(value) {
+      return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
+    titleEl.addEventListener('input', () => {
+      if (!slugEl.dataset.touched) {
+        slugEl.value = slugify(titleEl.value);
+      }
+    });
+
+    slugEl.addEventListener('input', () => {
+      slugEl.dataset.touched = 'true';
+    });
+
+    function tagLines(rawTags) {
+      const tags = rawTags.split(',').map((tag) => tag.trim()).filter(Boolean);
+      if (!tags.length) return 'tags:\n  - "skill"\n';
+      return `tags:\n${tags.map((tag) => `  - "${escapeYaml(tag)}"`).join('\n')}\n`;
+    }
+
+    function generate() {
+      const title = titleEl.value.trim();
+      const category = categoryEl.value;
+      const proficiency = proficiencyEl.value;
+      const slug = slugEl.value.trim() || slugify(title);
+      const firstUsed = firstUsedEl.value;
+      const body = notesEl.value.trim();
+
+      if (!title) {
+        titleEl.focus();
+        return;
+      }
+
+      currentFilename = `${slug}.md`;
+      let markdown = '---\n';
+      markdown += 'layout: skill.html\n';
+      markdown += `title: "${escapeYaml(title)}"\n`;
+      markdown += `category: "${escapeYaml(category)}"\n`;
+      markdown += `proficiency: "${escapeYaml(proficiency)}"\n`;
+      markdown += firstUsed ? `firstUsed: "${firstUsed}"\n` : '# firstUsed: ""\n';
+      markdown += `skillSlug: "${escapeYaml(slug)}"\n`;
+      markdown += tagLines(tagsEl.value);
+      markdown += '---\n\n';
+      markdown += `# ${title}\n\n`;
+      markdown += body ? `${body}\n` : '';
+
+      currentMarkdown = markdown;
+      filenameEl.textContent = `src/_skills/${currentFilename}`;
+      outputEl.textContent = markdown;
+      outputWrap.style.display = 'block';
+      copyBtn.hidden = false;
+      downloadBtn.hidden = false;
+    }
+
+    document.getElementById('generate').addEventListener('click', generate);
+
+    copyBtn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(currentMarkdown);
+      copyBtn.textContent = 'copied';
+      setTimeout(() => { copyBtn.textContent = 'copy markdown'; }, 1200);
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const blob = new Blob([currentMarkdown], { type: 'text/markdown' });
+      const anchor = document.createElement('a');
+      anchor.href = URL.createObjectURL(blob);
+      anchor.download = currentFilename;
+      anchor.click();
+      URL.revokeObjectURL(anchor.href);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        generate();
+      }
+    });
+  </script>
+</body>
+</html>
