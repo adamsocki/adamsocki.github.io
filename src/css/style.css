@@ -1359,3 +1359,261 @@ a.tag:hover {
 [data-theme="dark"] .skill-detail-header:hover .skill-icon {
   filter: brightness(1.1);
 }
+
+/* About Page */
+.about-page h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-main);
+}
+
+.about-bio {
+  margin-bottom: 25px;
+}
+
+.about-bio-content {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.about-bio-content p {
+  margin-bottom: 12px;
+}
+
+.about-section {
+  margin-bottom: 30px;
+}
+
+.about-section-title {
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-heading);
+  margin: 20px 0 10px 0;
+  padding: 5px 8px;
+  background: var(--bg-accent);
+  border-left: 3px solid var(--border-main);
+}
+
+/* Experience Timeline */
+.experience-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.experience-card {
+  background: var(--bg-content);
+  border: 1px solid var(--border-light);
+  padding: 12px 15px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.experience-card:hover {
+  border-color: var(--border-main);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+[data-theme="dark"] .experience-card:hover {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.experience-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 15px;
+  margin-bottom: 6px;
+}
+
+.experience-card-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.experience-card-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin: 0;
+}
+
+.experience-card-title a {
+  color: var(--text-heading);
+  text-decoration: none;
+}
+
+.experience-card-title a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+.experience-card-company {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.experience-card-dates {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.experience-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.experience-location {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* Experience Detail Page */
+.experience-detail {
+  max-width: 100%;
+}
+
+.experience-detail-header {
+  margin-bottom: 6px;
+}
+
+.experience-detail-header h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin-bottom: 3px;
+  line-height: 1.3;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.experience-company {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.experience-detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-lighter);
+}
+
+.experience-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.experience-date-range {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.experience-detail-content {
+  margin-top: 20px;
+}
+
+.experience-detail-content h1 {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin: 20px 0 10px 0;
+}
+
+.experience-detail-content h2 {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin: 18px 0 10px 0;
+}
+
+.experience-detail-content h3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin: 15px 0 8px 0;
+}
+
+.experience-detail-content p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.experience-detail-content ul,
+.experience-detail-content ol {
+  margin: 10px 0 12px 20px;
+  line-height: 1.6;
+}
+
+.experience-detail-content li {
+  margin-bottom: 5px;
+}
+
+/* About Skills Overview */
+.about-skill-group {
+  margin-bottom: 15px;
+}
+
+.about-skill-group-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text-heading);
+  margin-bottom: 6px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--border-lighter);
+  text-transform: lowercase;
+}
+
+.about-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.about-skill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--bg-accent);
+  border: 1px solid var(--border-lighter);
+  font-size: 11px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.about-skill-item:hover {
+  border-color: var(--border-main);
+  color: var(--text-primary);
+}
+
+.about-skill-name {
+  font-weight: bold;
+}
+
+.about-empty {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: italic;
+  padding: 8px 0;
+}

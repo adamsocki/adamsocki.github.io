@@ -55,6 +55,13 @@ module.exports = function(eleventyConfig) {
     });
   });
 
+  // Add experience collection
+  eleventyConfig.addCollection("experience", function(collection) {
+    return collection.getFilteredByGlob("src/_experience/*.md").sort(function(a, b) {
+      return new Date(b.data.startDate || 0) - new Date(a.data.startDate || 0);
+    });
+  });
+
   // Add a collection of all unique skill categories
   eleventyConfig.addCollection("skillCategories", function(collection) {
     const cats = new Set();
@@ -72,7 +79,7 @@ module.exports = function(eleventyConfig) {
         let tags = item.data.tags;
         if (typeof tags === "string") tags = [tags];
         tags.forEach(tag => {
-          if (tag !== "post" && tag !== "skill") tagSet.add(tag);
+          if (tag !== "post" && tag !== "skill" && tag !== "experience") tagSet.add(tag);
         });
       }
     });

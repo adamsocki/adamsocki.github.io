@@ -1,0 +1,46 @@
+---
+layout: base.html
+---
+
+<div class="back-link">
+  <a href="{{ '/about/' | url }}">&larr; Back to About</a>
+</div>
+
+<article class="experience-detail">
+  <header class="experience-detail-header">
+    <h2>{{ title }}</h2>
+    {%- if company -%}
+      <p class="experience-company">{{ company }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="experience-detail-meta">
+    <div class="experience-meta-row">
+      {%- if startDate -%}
+        <span class="experience-date-range">
+          {{ startDate | date: "%b %Y" }}
+          {%- if endDate != "" and endDate -%}
+            &mdash; {{ endDate | date: "%b %Y" }}
+          {%- else -%}
+            &mdash; Present
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+      {%- if location -%}
+        <span class="experience-location">{{ location }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="project-tags">
+      {%- for tag in tags -%}
+        {%- if tag != "experience" -%}
+          <a href="{{ '/tags/' | url }}{{ tag | slug }}/" class="tag">{{ tag }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="experience-detail-content">
+    {{ content }}
+  </div>
+</article>
