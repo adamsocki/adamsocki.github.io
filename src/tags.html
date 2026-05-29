@@ -1,0 +1,47 @@
+---
+layout: base.html
+pagination:
+  data: collections.tagList
+  size: 1
+  alias: tag
+permalink: /tags/{{ tag | slug }}/
+title: "Tag: {{ tag }}"
+---
+
+<div class="back-link">
+  <a href="{{ '/projects-list/' | url }}">&larr; Back to Projects</a>
+</div>
+
+<h2 class="tag-page-title">Tag: {{ tag }}</h2>
+
+<h3 class="tag-section-title">Projects</h3>
+<div class="projects-grid">
+  {%- assign hasProjects = false -%}
+  {%- for project in collections.projects -%}
+    {%- if project.data.tags contains tag -%}
+      {%- assign hasProjects = true -%}
+      {% include "project-card.html" project: project %}
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+{%- unless hasProjects -%}
+  <p class="tag-empty">No projects with this tag.</p>
+{%- endunless -%}
+
+<h3 class="tag-section-title">Posts</h3>
+{%- assign hasPosts = false -%}
+{%- for post in collections.posts -%}
+  {%- if post.data.tags contains tag -%}
+    {%- assign hasPosts = true -%}
+    <div class="archive-entry">
+      {%- if post.data.type and post.data.type != "article" -%}
+        <span class="post-type-badge post-type-{{ post.data.type }}">{{ post.data.type }}</span>
+      {%- endif -%}
+      <a href="{{ post.url | url }}" class="archive-link">{{ post.data.title }}</a>
+      <div class="archive-date">{{ post.date | date: "%b %e, %Y" }}</div>
+    </div>
+  {%- endif -%}
+{%- endfor -%}
+{%- unless hasPosts -%}
+  <p class="tag-empty">No posts with this tag.</p>
+{%- endunless -%}

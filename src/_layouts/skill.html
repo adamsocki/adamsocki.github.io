@@ -1,0 +1,117 @@
+---
+layout: base.html
+---
+
+<div class="back-link">
+  <a href="{{ '/skills-list/' | url }}">&larr; Back to Skills</a>
+</div>
+
+<article class="skill-detail">
+  <header class="skill-detail-header">
+    {%- if iconPath -%}
+      <img src="{{ iconPath | url }}" alt="{{ title }}" class="skill-icon" width="28" height="28" />
+    {%- elsif icon -%}
+      <img src="https://cdn.simpleicons.org/{{ icon }}/{{ iconColor }}" alt="{{ title }}" class="skill-icon" width="28" height="28" />
+    {%- endif -%}
+    <h2>{{ title }}</h2>
+  </header>
+
+  <div class="skill-detail-meta">
+    <div class="skill-meta-row">
+      {%- if category -%}
+        <span class="skill-category">{{ category }}</span>
+      {%- endif -%}
+      {%- if proficiency -%}
+        <span class="proficiency-badge proficiency-{{ proficiency | downcase }}">{{ proficiency }}</span>
+      {%- endif -%}
+      {%- if firstUsed -%}
+        <span class="skill-date">since {{ firstUsed | date: "%Y" }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="project-tags">
+      {%- for tag in tags -%}
+        {%- if tag != "skill" -%}
+          <a href="{{ '/tags/' | url }}{{ tag | slug }}/" class="tag">{{ tag }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="skill-detail-content">
+    {{ content }}
+  </div>
+
+  {%- assign skillTags = "" -%}
+  {%- for tag in tags -%}
+    {%- if tag != "skill" -%}
+      {%- assign skillTags = skillTags | append: tag | append: "," -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- assign hasRelatedProjects = false -%}
+  {%- for project in collections.projects -%}
+    {%- for ptag in project.data.tags -%}
+      {%- if skillTags contains ptag -%}
+        {%- assign hasRelatedProjects = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if hasRelatedProjects -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if hasRelatedProjects -%}
+  <div class="skill-related">
+    <h3>Related Projects</h3>
+    <div class="projects-grid">
+      {%- for project in collections.projects -%}
+        {%- assign match = false -%}
+        {%- for ptag in project.data.tags -%}
+          {%- if skillTags contains ptag -%}
+            {%- assign match = true -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if match -%}
+          {% include "project-card.html" project: project %}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- assign hasRelatedPosts = false -%}
+  {%- for post in collections.posts -%}
+    {%- for ptag in post.data.tags -%}
+      {%- if skillTags contains ptag -%}
+        {%- assign hasRelatedPosts = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if hasRelatedPosts -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if hasRelatedPosts -%}
+  <div class="skill-related">
+    <h3>Related Posts</h3>
+    {%- for post in collections.posts -%}
+      {%- assign match = false -%}
+      {%- for ptag in post.data.tags -%}
+        {%- if skillTags contains ptag -%}
+          {%- assign match = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if match -%}
+      <div class="archive-entry">
+        {%- if post.data.type and post.data.type != "article" -%}
+          <span class="post-type-badge post-type-{{ post.data.type }}">{{ post.data.type }}</span>
+        {%- endif -%}
+        <a href="{{ post.url | url }}" class="archive-link">{{ post.data.title }}</a>
+        <div class="archive-date">{{ post.date | date: "%b %e, %Y" }}</div>
+      </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+</article>

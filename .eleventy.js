@@ -48,6 +48,37 @@ module.exports = function(eleventyConfig) {
     return map;
   });
 
+  // Add skills collection
+  eleventyConfig.addCollection("skills", function(collection) {
+    return collection.getFilteredByGlob("src/_skills/*.md").sort(function(a, b) {
+      return (a.data.title || "").localeCompare(b.data.title || "");
+    });
+  });
+
+  // Add a collection of all unique skill categories
+  eleventyConfig.addCollection("skillCategories", function(collection) {
+    const cats = new Set();
+    collection.getFilteredByGlob("src/_skills/*.md").forEach(item => {
+      if (item.data.category) cats.add(item.data.category);
+    });
+    return [...cats].sort();
+  });
+
+  // Add a collection of all unique tags (excluding the system "post" tag)
+  eleventyConfig.addCollection("tagList", function(collection) {
+    const tagSet = new Set();
+    collection.getAll().forEach(item => {
+      if (item.data.tags) {
+        let tags = item.data.tags;
+        if (typeof tags === "string") tags = [tags];
+        tags.forEach(tag => {
+          if (tag !== "post" && tag !== "skill") tagSet.add(tag);
+        });
+      }
+    });
+    return [...tagSet].sort();
+  });
+
   // Sort collections from newest to oldest without mutating Eleventy's arrays.
   eleventyConfig.addFilter("newestFirst", function(arr) {
     return [...arr].sort(newestFirst);

@@ -6,7 +6,80 @@ permalink: /projects-list/index.html
 
 <h2>Curated Projects</h2>
 
-<div class="projects-grid">
-    {%- for project in collections.projects -%} {% include "project-card.html"
-    project: project %} {%- endfor -%}
+<div class="projects-toolbar" id="projects-toolbar">
+  <input type="text" id="project-search" class="project-search-input" placeholder="search projects..." autocomplete="off" />
+  <div class="toolbar-filters">
+    <span class="filter-label">status:</span>
+    <button class="filter-btn active" data-status="all">all</button>
+    <button class="filter-btn" data-status="active">active</button>
+    <button class="filter-btn" data-status="paused">paused</button>
+    <button class="filter-btn" data-status="learning">learning</button>
+    <span class="filter-sep">|</span>
+    <span class="filter-label">tag:</span>
+    <button class="filter-btn active" data-tag="all">all</button>
+    {%- for tag in collections.tagList -%}
+    <button class="filter-btn" data-tag="{{ tag | slug }}">{{ tag }}</button>
+    {%- endfor -%}
+  </div>
 </div>
+
+<div class="projects-grid" id="projects-grid">
+  {%- for project in collections.projects -%}
+    {% include "project-card.html" project: project %}
+  {%- endfor -%}
+</div>
+
+<div id="no-results" style="display: none; padding: 15px; color: var(--text-tertiary); font-style: italic;">No projects match your filters.</div>
+
+<script>
+(function() {
+  var activeStatus = "all";
+  var activeTag = "all";
+  var searchQuery = "";
+
+  var cards = document.querySelectorAll(".project-card");
+  var searchInput = document.getElementById("project-search");
+  var noResults = document.getElementById("no-results");
+
+  function applyFilters() {
+    var visible = 0;
+    cards.forEach(function(card) {
+      var status = card.dataset.status || "";
+      var tags = card.dataset.tags || "";
+      var text = card.textContent.toLowerCase();
+
+      var matchStatus = activeStatus === "all" || status === activeStatus;
+      var matchTag = activeTag === "all" || tags.split(",").indexOf(activeTag) !== -1;
+      var matchSearch = !searchQuery || text.indexOf(searchQuery) !== -1;
+
+      var show = matchStatus && matchTag && matchSearch;
+      card.style.display = show ? "" : "none";
+      if (show) visible++;
+    });
+    noResults.style.display = visible === 0 ? "" : "none";
+  }
+
+  document.querySelectorAll(".filter-btn[data-status]").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".filter-btn[data-status]").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      activeStatus = btn.dataset.status;
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll(".filter-btn[data-tag]").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".filter-btn[data-tag]").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      activeTag = btn.dataset.tag;
+      applyFilters();
+    });
+  });
+
+  searchInput.addEventListener("input", function(e) {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+  });
+})();
+</script>

@@ -1,4 +1,6 @@
-<div class="project-card">
+<div class="project-card"
+     data-status="{{ project.data.status | downcase }}"
+     data-tags="{%- for tag in project.data.tags -%}{{ tag | slug }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}">
 
   <div class="project-header">
     <h3 class="project-title"><a href="{{ project.url }}">{{ project.data.title }}</a></h3>
@@ -10,7 +12,7 @@
   <div class="project-meta">
     <div class="project-tags">
       {%- for tag in project.data.tags -%}
-        <span class="tag">{{ tag }}</span>
+        <a href="{{ '/tags/' | url }}{{ tag | slug }}/" class="tag">{{ tag }}</a>
       {%- endfor -%}
     </div>
 

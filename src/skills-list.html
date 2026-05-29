@@ -1,0 +1,123 @@
+---
+layout: base.html
+title: Skills
+permalink: /skills-list/index.html
+---
+
+<h2>Skills &amp; Technologies</h2>
+
+<div class="skills-toolbar" id="skills-toolbar">
+  <input type="text" id="skill-search" class="skill-search-input" placeholder="search skills..." autocomplete="off" />
+  <div class="toolbar-filters">
+    <span class="filter-label">proficiency:</span>
+    <button class="filter-btn active" data-proficiency="all">all</button>
+    <button class="filter-btn" data-proficiency="expert">expert</button>
+    <button class="filter-btn" data-proficiency="advanced">advanced</button>
+    <button class="filter-btn" data-proficiency="intermediate">intermediate</button>
+    <button class="filter-btn" data-proficiency="beginner">beginner</button>
+    <span class="filter-sep">|</span>
+    <span class="filter-label">category:</span>
+    <button class="filter-btn active" data-category="all">all</button>
+    {%- for cat in collections.skillCategories -%}
+    <button class="filter-btn" data-category="{{ cat | slug }}">{{ cat }}</button>
+    {%- endfor -%}
+  </div>
+</div>
+
+<div class="skills-grid" id="skills-grid">
+  {%- for skill in collections.skills -%}
+    <div class="skill-card"
+         data-proficiency="{{ skill.data.proficiency | downcase }}"
+         data-category="{{ skill.data.category | downcase | replace: " ", "-" }}"
+         data-tags="{%- for tag in skill.data.tags -%}{%- if tag != 'skill' -%}{{ tag | slug }}{%- unless forloop.last -%},{%- endunless -%}{%- endif -%}{%- endfor -%}">
+
+      <div class="skill-card-header">
+        {%- if skill.data.iconPath -%}
+          <img src="{{ skill.data.iconPath | url }}" alt="{{ skill.data.title }}" class="skill-icon" width="20" height="20" loading="lazy" />
+        {%- elsif skill.data.icon -%}
+          <img src="https://cdn.simpleicons.org/{{ skill.data.icon }}/{{ skill.data.iconColor }}" alt="{{ skill.data.title }}" class="skill-icon" width="20" height="20" loading="lazy" />
+        {%- endif -%}
+        <h3 class="skill-card-title"><a href="{{ skill.url }}">{{ skill.data.title }}</a></h3>
+        {%- if skill.data.proficiency -%}
+          <span class="proficiency-badge proficiency-{{ skill.data.proficiency | downcase }}">{{ skill.data.proficiency }}</span>
+        {%- endif -%}
+      </div>
+
+      <div class="skill-card-meta">
+        {%- if skill.data.category -%}
+          <span class="skill-category">{{ skill.data.category }}</span>
+        {%- endif -%}
+        <div class="project-tags">
+          {%- for tag in skill.data.tags -%}
+            {%- if tag != "skill" -%}
+              <a href="{{ '/tags/' | url }}{{ tag | slug }}/" class="tag">{{ tag }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- if skill.data.firstUsed -%}
+        <div class="skill-card-date">since {{ skill.data.firstUsed | date: "%Y" }}</div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{%- if collections.skills.size == 0 -%}
+  <p class="skills-empty">No skills added yet. Create your first skill file in <code>src/_skills/</code>.</p>
+{%- endif -%}
+
+<div id="no-skill-results" style="display: none; padding: 15px; color: var(--text-tertiary); font-style: italic;">No skills match your filters.</div>
+
+<script>
+(function() {
+  var activeProficiency = "all";
+  var activeCategory = "all";
+  var searchQuery = "";
+
+  var cards = document.querySelectorAll(".skill-card");
+  var searchInput = document.getElementById("skill-search");
+  var noResults = document.getElementById("no-skill-results");
+
+  function applyFilters() {
+    var visible = 0;
+    cards.forEach(function(card) {
+      var proficiency = card.dataset.proficiency || "";
+      var category = card.dataset.category || "";
+      var text = card.textContent.toLowerCase();
+
+      var matchProf = activeProficiency === "all" || proficiency === activeProficiency;
+      var matchCat = activeCategory === "all" || category === activeCategory;
+      var matchSearch = !searchQuery || text.indexOf(searchQuery) !== -1;
+
+      var show = matchProf && matchCat && matchSearch;
+      card.style.display = show ? "" : "none";
+      if (show) visible++;
+    });
+    noResults.style.display = visible === 0 ? "" : "none";
+  }
+
+  document.querySelectorAll(".filter-btn[data-proficiency]").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".filter-btn[data-proficiency]").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      activeProficiency = btn.dataset.proficiency;
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll(".filter-btn[data-category]").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".filter-btn[data-category]").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      activeCategory = btn.dataset.category;
+      applyFilters();
+    });
+  });
+
+  searchInput.addEventListener("input", function(e) {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
+  });
+})();
+</script>

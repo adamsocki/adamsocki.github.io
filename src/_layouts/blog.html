@@ -27,6 +27,19 @@ layout: base.html
         <span class="post-project-badge">{{ project }}</span>
       {%- endif -%}
     </div>
+    {%- assign displayTags = "" | split: "" -%}
+    {%- for tag in tags -%}
+      {%- if tag != "post" -%}
+        {%- assign displayTags = displayTags | push: tag -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if displayTags.size > 0 -%}
+      <div class="project-tags" style="margin-top: 6px;">
+        {%- for tag in displayTags -%}
+          <a href="{{ '/tags/' | url }}{{ tag | slug }}/" class="tag">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </header>
 
   {%- if summary -%}
